@@ -1,0 +1,40 @@
+package com.example.piggybankpro.presentation.viewmodels;
+
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.example.piggybankpro.data.local.entities.TransactionEntity;
+import com.example.piggybankpro.data.repository.TransactionRepository;
+import com.example.piggybankpro.data.repository.RepositoryFactory;
+
+import java.util.Date;
+import java.util.List;
+
+public class TransactionViewModel extends AndroidViewModel {
+
+    private final TransactionRepository transactionRepository;
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+
+    public TransactionViewModel(@NonNull Application application) {
+        super(application);
+        transactionRepository = RepositoryFactory.getInstance(application).getTransactionRepository();
+    }
+
+    // Фильтрация
+    public LiveData<List<TransactionEntity>> getTransactionsByGoalId(String goalId) {
+        return transactionRepository.getTransactionsByGoalId(goalId);
+    }
+
+    // Ошибки
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void clearError() {
+        errorMessage.setValue(null);
+    }
+}

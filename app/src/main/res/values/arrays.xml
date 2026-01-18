@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Приоритеты -->
+    <string-array name="priority_levels">
+        <item>Очень низкий</item>
+        <item>Низкий</item>
+        <item>Средний</item>
+        <item>Высокий</item>
+        <item>Очень высокий</item>
+    </string-array>
+
+    <!-- Периоды автопополнения -->
+    <string-array name="period_types">
+        <item>Ежедневно</item>
+        <item>Еженедельно</item>
+        <item>Раз в две недели</item>
+        <item>Ежемесячно</item>
+        <item>Ежеквартально</item>
+        <item>Ежегодно</item>
+    </string-array>
+
+    <!-- Типы пополнения -->
+    <string-array name="deposit_types">
+        <item>Фиксированная сумма</item>
+        <item>Процент</item>
+    </string-array>
+
+    <!-- Темы -->
+    <string-array name="theme_options">
+        <item>Светлая</item>
+        <item>Темная</item>
+        <item>Системная</item>
+    </string-array>
+
+    <!-- Валюты -->
+    <string-array name="currency_options">
+        <item>RUB - Российский рубль</item>
+        <item>USD - Доллар США</item>
+        <item>EUR - Евро</item>
+        <item>GBP - Фунт стерлингов</item>
+        <item>CNY - Китайский юань</item>
+        <item>JPY - Японская иена</item>
+    </string-array>
+</resources>

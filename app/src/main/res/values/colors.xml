@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Основные цвета -->
+    <color name="primary">#3F51B5</color>
+    <color name="primary_dark">#303F9F</color>
+    <color name="primary_light">#C5CAE9</color>
+    <color name="accent">#FF4081</color>
+
+    <!-- Цвета для состояния -->
+    <color name="active">#E8F5E9</color>
+    <color name="inactive">#F5F5F5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="success_light">#E8F5E9</color>
+
+    <color name="divider_color">#BDBDBD</color>
+    <!-- Цвета прогресса -->
+<!--    <color name="progress_low">#F44336</color>-->
+<!--    <color name="progress_medium">#FF9800</color>-->
+<!--    <color name="progress_high">#4CAF50</color>-->
+
+    <color name="highlight_color">#E3F2FD</color>
+    <color name="success">#4CAF50</color>
+
+    <!-- Системные цвета -->
+    <color name="green_500">#4CAF50</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="background">#FFFFFF</color>
+
+    <!-- Добавьте эти цвета -->
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_600">#757575</color>
+    <color name="grey_800">#424242</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <color name="text_secondary">#757575</color>
+    <color name="gray">#9E9E9E</color>
+</resources>

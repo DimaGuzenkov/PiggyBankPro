@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="text_view_goal_title" />
+    <item type="id" name="text_view_dialog_title" />
+    <item type="id" name="button_positive" />
+    <item type="id" name="button_negative" />
+    <item type="id" name="button_cancel" />
+    <item type="id" name="button_confirm" />
+    <item type="id" name="radio_button_withdraw" />
+    <item type="id" name="radio_button_deposit" />
+    <item type="id" name="radio_group_operation" />
+</resources>

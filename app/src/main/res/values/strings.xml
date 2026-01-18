@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PiggyBank Pro</string>
+
+    <string name="action_settings">Настройки</string>
+    <string name="action_add">Добавить</string>
+    <string name="action_edit">Редактировать</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_save">Сохранить</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_ok">OK</string>
+    <string name="title_activity_main">Мои цели</string>
+    <string name="title_activity_create_goal">Новая цель</string>
+    <string name="title_activity_goal_detail">Детали цели</string>
+    <string name="title_activity_auto_deposit">Автопополнение</string>
+    <string name="title_activity_settings">Настройки</string>
+
+    <!-- Сообщения -->
+    <string name="empty_goals_list">У вас пока нет целей накопления\nНажмите + чтобы добавить первую</string>
+    <string name="empty_auto_deposits_list">У вас нет настроенных автопополнений\nНажмите + чтобы добавить</string>
+
+    <!-- Поля формы -->
+    <string name="hint_title">Название цели</string>
+    <string name="hint_description">Описание (необязательно)</string>
+    <string name="hint_target_amount">Целевая сумма</string>
+    <string name="hint_current_amount">Текущая сумма</string>
+    <string name="hint_goal_url">URL цели (необязательно)</string>
+    <string name="hint_amount">Сумма</string>
+    <string name="hint_description_optional">Описание (необязательно)</string>
+
+    <!-- Кнопки -->
+    <string name="btn_save_goal">Сохранить цель</string>
+    <string name="btn_auto_fill">Автозаполнить</string>
+    <string name="btn_choose_date">Выбрать дату</string>
+    <string name="btn_choose_color">Выбрать цвет</string>
+    <string name="btn_deposit">Пополнить</string>
+    <string name="btn_withdraw">Списать</string>
+    <string name="btn_transfer">Перевести</string>
+    <string name="btn_add_auto_deposit">Добавить автопополнение</string>
+    <string name="btn_select_goals">Выбрать цели</string>
+    <string name="btn_backup_now">Создать резервную копию</string>
+    <string name="btn_export_data">Экспорт данных</string>
+    <string name="btn_import_data">Импорт данных</string>
+    <string name="btn_reset_data">Сбросить все данные</string>
+
+    <!-- Labels -->
+    <string name="label_title">Название</string>
+    <string name="label_description">Описание</string>
+    <string name="label_target_amount">Целевая сумма</string>
+    <string name="label_current_amount">Текущая сумма</string>
+    <string name="label_target_date">Дата цели</string>
+    <string name="label_priority">Приоритет</string>
+    <string name="label_color">Цвет</string>
+    <string name="label_url">URL цели</string>
+    <string name="label_progress">Прогресс</string>
+    <string name="label_days_left">Осталось дней</string>
+    <string name="label_amount_needed">Нужно собрать</string>
+    <string name="label_total_saved">Всего накоплено</string>
+    <string name="label_total_target">Общая цель</string>
+    <string name="label_overall_progress">Общий прогресс</string>
+
+    <!-- Настройки -->
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_notification_sound">Звук уведомлений</string>
+    <string name="settings_vibration">Вибрация</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_text_size">Размер текста</string>
+    <string name="settings_currency">Валюта</string>
+    <string name="settings_biometric_auth">Биометрическая аутентификация</string>
+    <string name="settings_auto_backup">Автоматическое резервное копирование</string>
+
+    <!-- Сообщения об ошибках -->
+    <string name="error_required_field">Поле обязательно для заполнения</string>
+    <string name="error_invalid_amount">Неверная сумма</string>
+    <string name="error_insufficient_funds">Недостаточно средств</string>
+    <string name="error_goal_not_found">Цель не найдена</string>
+
+    <!-- Диалоги -->
+    <string name="dialog_delete_title">Удаление</string>
+    <string name="dialog_delete_message">Вы уверены, что хотите удалить?</string>
+    <string name="dialog_archive_title">Архивация</string>
+    <string name="dialog_archive_message">Вы уверены, что хотите архивировать?</string>
+    <string name="dialog_reset_data_title">Сброс данных</string>
+    <string name="dialog_reset_data_message">Вы уверены, что хотите сбросить все данные? Это действие нельзя отменить.</string>
+</resources>
