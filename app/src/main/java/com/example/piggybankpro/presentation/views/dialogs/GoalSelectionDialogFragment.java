@@ -41,11 +41,6 @@ public class GoalSelectionDialogFragment extends DialogFragment {
         this.listener = listener;
     }
 
-    @Override
-    public void onAttach(Context context) {
-
-    }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

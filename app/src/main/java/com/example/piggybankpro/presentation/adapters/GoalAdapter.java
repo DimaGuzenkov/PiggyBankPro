@@ -30,28 +30,28 @@ import java.util.Locale;
 
 public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public void moveItem(int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(goals, i, i + 1);
-            }
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(goals, i, i - 1);
-            }
-        }
-
-        // Обновляем порядковые позиции
-//        for (int i = 0; i < goals.size(); i++) {
-//            goals.get(i).setOrderPosition(i);
+//    public void moveItem(int fromPosition, int toPosition) {
+//        if (fromPosition < toPosition) {
+//            for (int i = fromPosition; i < toPosition; i++) {
+//                Collections.swap(goals, i, i + 1);
+//            }
+//        } else {
+//            for (int i = fromPosition; i > toPosition; i--) {
+//                Collections.swap(goals, i, i - 1);
+//            }
 //        }
-
-        notifyItemMoved(fromPosition, toPosition);
-
-        if (listener != null) {
-//            listener.onGoalMoved(fromPosition, toPosition);
-        }
-    }
+//
+//        // Обновляем порядковые позиции
+////        for (int i = 0; i < goals.size(); i++) {
+////            goals.get(i).setOrderPosition(i);
+////        }
+//
+//        notifyItemMoved(fromPosition, toPosition);
+//
+//        if (listener != null) {
+////            listener.onGoalMoved(fromPosition, toPosition);
+//        }
+//    }
 
     public interface OnGoalClickListener {
         void onGoalClick(GoalEntity goal);
@@ -59,7 +59,8 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void onGoalDetailsClick(GoalEntity goal);
         void onGoalDroppedOnGoal(GoalEntity draggedGoal, GoalEntity targetGoal);
         void onGoalDroppedBetween(GoalEntity draggedGoal, int insertIndex);
-    }
+        void onGoalSwiped(int position);
+}
 
     private static final int TYPE_GOAL = 0;
     private static final int TYPE_DIVIDER = 1;
@@ -141,7 +142,7 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return goals;
     }
 
-    private GoalEntity getGoalByPosition(int position) {
+    public GoalEntity getGoalByPosition(int position) {
         return goals.get((position - 1) / 2);
     }
 
@@ -464,7 +465,7 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         .start();
             } else {
                 dividerLine.setBackgroundColor(
-                        itemView.getContext().getResources().getColor(R.color.divider_color, null)
+                        itemView.getContext().getResources().getColor(R.color.background, null)
                 );
                 dividerLine.setElevation(2f);
 

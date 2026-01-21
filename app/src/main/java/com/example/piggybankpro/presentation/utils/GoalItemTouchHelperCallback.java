@@ -1,10 +1,14 @@
 package com.example.piggybankpro.presentation.utils;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -27,9 +31,24 @@ public class GoalItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private final int swipeRightColor = Color.parseColor("#F44336"); // Красный
     private final int dragColor = Color.parseColor("#2196F3"); // Синий для подсветки
 
+    private float maxSwipeDistance;
+//    private Paint textPaint;
+//    private String text = "Удалить";
+//    private float textX;
+//    private float textY;
+
     public GoalItemTouchHelperCallback(GoalAdapter adapter) {
         this.adapter = adapter;
+//        initView();
     }
+
+//    private void initView() {
+//        textPaint = new Paint();
+//        textPaint.setColor(Color.WHITE);
+//        textPaint.setTextSize(42);
+//        textPaint.setAntiAlias(true);
+//        textPaint.setTextAlign(Paint.Align.LEFT);
+//    }
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView,
@@ -47,58 +66,25 @@ public class GoalItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public boolean onMove(@NonNull RecyclerView recyclerView,
                           @NonNull RecyclerView.ViewHolder viewHolder,
                           @NonNull RecyclerView.ViewHolder target) {
-//        // Меняем элементы местами в адаптере
-//        int fromPosition = viewHolder.getAdapterPosition();
-//        int toPosition = target.getAdapterPosition();
-//
-//        if (fromPosition != toPosition && fromPosition >= 0 && toPosition >= 0) {
-//            adapter.moveItem(fromPosition, toPosition);
-//            return true;
-//        }
-
         return false;
     }
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        int position = viewHolder.getAdapterPosition();
+        int position = viewHolder.getAbsoluteAdapterPosition();
         if (adapter.listener != null) {
-//            adapter.listener.onGoalSwiped(position);
-        }
-    }
-
-    @Override
-    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-        super.onSelectedChanged(viewHolder, actionState);
-
-        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            // Начало перетаскивания
-//            adapter.setDragging(true);
-
-            if (viewHolder != null) {
-                // Визуальная обратная связь
-                viewHolder.itemView.setAlpha(0.7f);
-                viewHolder.itemView.setElevation(8f);
-            }
-
-        } else if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            // Начало свайпа
-//            adapter.setDragging(false);
-
-        } else if (actionState == ItemTouchHelper.ACTION_STATE_IDLE) {
-            // Завершение всех действий
-//            adapter.setDragging(false);
+            adapter.listener.onGoalSwiped(position);
         }
     }
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView,
                           @NonNull RecyclerView.ViewHolder viewHolder) {
-        super.clearView(recyclerView, viewHolder);
+//        super.clearView(recyclerView, viewHolder);
 
         // Восстанавливаем внешний вид элемента
         viewHolder.itemView.setAlpha(1.0f);
-        viewHolder.itemView.setElevation(0f);
+//        viewHolder.itemView.setElevation(0f);
         viewHolder.itemView.setTranslationX(0);
         viewHolder.itemView.setTranslationY(0);
     }
@@ -115,11 +101,6 @@ public class GoalItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
             // Смещаем элемент
             viewHolder.itemView.setTranslationX(dX);
-
-        } else if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-            // Drag - стандартное поведение
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY,
-                    actionState, isCurrentlyActive);
         } else {
             // Для других случаев
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY,
@@ -140,26 +121,24 @@ public class GoalItemTouchHelperCallback extends ItemTouchHelper.Callback {
         }
 
         // Ограничиваем максимальное смещение
-        float maxSwipeDistance = itemView.getWidth() * 0.8f;
+        float maxSwipeDistance = itemView.getWidth() * 0.5f;
         if (dX > maxSwipeDistance) {
             dX = maxSwipeDistance;
         }
 
-        // Рисуем красный фон с закругленными углами
         RectF background = new RectF(
                 itemView.getLeft(),
-                itemView.getTop() + 8,
-                dX,
-                itemView.getBottom() - 8
+                itemView.getTop() + 16,
+                Math.max(24, dX + 24),
+                itemView.getBottom() - 16
         );
 
         paint.setColor(swipeRightColor);
         canvas.drawRoundRect(background, 16, 16, paint);
 
-        // Рисуем иконку корзины
         if (deleteIcon != null) {
-            int iconSize = deleteIcon.getIntrinsicHeight();
-            int iconLeft = itemView.getLeft() + 48;
+            int iconSize = (int)(itemView.getHeight() * 0.8);
+            int iconLeft = itemView.getLeft();
             int iconTop = itemView.getTop() + (itemView.getHeight() - iconSize) / 2;
             int iconRight = iconLeft + iconSize;
             int iconBottom = iconTop + iconSize;
@@ -168,38 +147,47 @@ public class GoalItemTouchHelperCallback extends ItemTouchHelper.Callback {
             deleteIcon.draw(canvas);
         }
 
+        if (dX > deleteIcon.getBounds().right) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Vibrator vibrator = (Vibrator) itemView.getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                if (vibrator != null) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                }
+            }
+        }
+
         // Рисуем текст "Удалить"
-        Paint textPaint = new Paint();
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(42);
-        textPaint.setAntiAlias(true);
-        textPaint.setTextAlign(Paint.Align.LEFT);
+//        Paint textPaint = new Paint();
+//        textPaint.setColor(Color.WHITE);
+//        textPaint.setTextSize(42);
+//        textPaint.setAntiAlias(true);
+//        textPaint.setTextAlign(Paint.Align.LEFT);
 
-        String text = "Удалить";
-        float textX = itemView.getLeft() + 112; // Отступ от иконки
-        float textY = itemView.getTop() + (itemView.getHeight() / 2) + 15;
-
-        canvas.drawText(text, textX, textY, textPaint);
+//        String text = "Удалить";
+//        float textX = itemView.getLeft() + 112; // Отступ от иконки
+//        float textY = itemView.getTop() + (itemView.getHeight() / 2) + 15;
+//
+//        canvas.drawText(text, textX, textY, textPaint);
 
         // Подсказка при полном свайпе
-        if (dX > itemView.getWidth() * 0.6f) {
-            Paint hintPaint = new Paint();
-            hintPaint.setColor(Color.WHITE);
-            hintPaint.setTextSize(32);
-            hintPaint.setTextAlign(Paint.Align.CENTER);
-            hintPaint.setAlpha(150);
-
-            String hint = "Отпустите для удаления";
-            float hintX = dX / 2;
-            float hintY = itemView.getBottom() - 24;
-
-            canvas.drawText(hint, hintX, hintY, hintPaint);
-        }
+//        if (dX > itemView.getWidth() * 0.4f) {
+//            Paint hintPaint = new Paint();
+//            hintPaint.setColor(Color.WHITE);
+//            hintPaint.setTextSize(32);
+//            hintPaint.setTextAlign(Paint.Align.CENTER);
+//            hintPaint.setAlpha(150);
+//
+//            String hint = "Отпустите для удаления";
+//            float hintX = dX / 2;
+//            float hintY = itemView.getBottom() - 24;
+//
+//            canvas.drawText(hint, hintX, hintY, hintPaint);
+//        }
     }
 
     @Override
     public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
-        return 0.5f; // Нужно свайпнуть минимум на 50%
+        return 0.4f;
     }
 
     @Override

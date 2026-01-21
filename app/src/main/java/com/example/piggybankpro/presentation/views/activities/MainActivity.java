@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setupRecyclerView();
         observeViewModel();
         setupFloatingActionButton();
-//        setupDragAndDrop();
+        setupDragAndDrop();
 
         GoalItemTouchHelperCallback callback = new GoalItemTouchHelperCallback(goalAdapter);
         itemTouchHelper = new ItemTouchHelper(callback);
@@ -88,11 +89,6 @@ public class MainActivity extends AppCompatActivity {
                 onGoalClicked(goal);
             }
 
-//            @Override
-//            public void onGoalDragStarted(GoalEntity goal, View view) {
-//                // Этот метод больше не нужен, т.к. перетаскивание начинается в onGoalLongClick
-//            }
-
             @Override
             public void onGoalDroppedOnGoal(GoalEntity draggedGoal, GoalEntity targetGoal) {
                 display(draggedGoal.getTitle() + " to " + targetGoal.getTitle());
@@ -104,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
                 mainViewModel.updatePosition(draggedGoal, insertIndex, goalAdapter.getGoals());
                 ToastUtils.display(MainActivity.this,
                             "Цель '" + draggedGoal.getTitle() + "' перемещена в '" + insertIndex + "'");
+            }
+
+            @Override
+            public void onGoalSwiped(int position) {
+                var goal = goalAdapter.getGoalByPosition(position);
+                showDeleteConfirmationDialog(goal, position);
             }
         });
 
@@ -132,6 +134,28 @@ public class MainActivity extends AppCompatActivity {
 //        binding.recyclerViewGoals.addItemDecoration(
 //                new DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
 //        );
+    }
+
+    private void showDeleteConfirmationDialog(GoalEntity goal, int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Удаление цели")
+                .setMessage("Вы уверены, что хотите удалить цель \"" + goal.getTitle() + "\"?")
+                .setPositiveButton("Удалить", (dialog, which) -> {
+                    // Подтверждение удаления
+//                    goalAdapter.removeItem(position);
+//                    mainViewModel.deleteGoal(goal.getId());
+                    ToastUtils.display(this, "Цель удалена: " + goal.getTitle());
+                })
+                .setNegativeButton("Отмена", (dialog, which) -> {
+                    // Отменяем свайп - восстанавливаем элемент
+                    goalAdapter.notifyItemChanged(position);
+                })
+                .setOnCancelListener(dialog -> {
+                    // Если диалог отменен (например, нажата кнопка назад)
+                    goalAdapter.notifyItemChanged(position);
+                })
+                .create()
+                .show();
     }
 
     private void setupDragAndDrop() {
@@ -244,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
             String currentParentId = mainViewModel.getCurrentParentId();
             intent.putExtra("parent_id", currentParentId);
             intent.putExtra("order_position", goalAdapter.getGoalCount());
-            startActivityForResult(intent, 1);
+            startActivity(intent);
         });
     }
 

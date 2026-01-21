@@ -6,7 +6,8 @@
     android:layout_height="17dp"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_marginHorizontal="12dp">
     <LinearLayout
         android:id="@+id/divider_line"
         android:layout_width="match_parent"
