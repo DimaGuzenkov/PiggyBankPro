@@ -37,7 +37,7 @@ public class GoalEntity {
     private String id = UUID.randomUUID().toString();
 
     @ColumnInfo(name = "title", defaultValue = "Новая цель")
-//    @NonNull
+    @NonNull
     private String title = "Новая цель";
 
     @ColumnInfo(name = "description")
@@ -76,6 +76,7 @@ public class GoalEntity {
     private String parentId;
 
     @ColumnInfo(name = "order_position", defaultValue = "0")
+    @NonNull
     private Integer orderPosition = 0;
 
     @ColumnInfo(name = "is_completed", defaultValue = "0")
@@ -84,16 +85,16 @@ public class GoalEntity {
     @ColumnInfo(name = "completed_date")
     private Date completedDate;
 
-    public Date getCompletedDate2() {
-        return completedDate2;
-    }
-
-    public void setCompletedDate2(Date completedDate2) {
-        this.completedDate2 = completedDate2;
-    }
-
-    @ColumnInfo(name = "completed_date2")
-    private Date completedDate2;
+//    public Date getCompletedDate2() {
+//        return completedDate2;
+//    }
+//
+//    public void setCompletedDate2(Date completedDate2) {
+//        this.completedDate2 = completedDate2;
+//    }
+//
+//    @ColumnInfo(name = "completed_date2")
+//    private Date completedDate2;
 
     public GoalEntity() {
     }

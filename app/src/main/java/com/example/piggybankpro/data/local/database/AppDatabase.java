@@ -1,23 +1,14 @@
 package com.example.piggybankpro.data.local.database;
 
-import android.content.Context;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.room.AutoMigration;
 import androidx.room.Database;
-import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.piggybankpro.data.local.converters.DateConverter;
 import com.example.piggybankpro.data.local.dao.AutoDepositDao;
 import com.example.piggybankpro.data.local.dao.GoalDao;
 import com.example.piggybankpro.data.local.dao.GoalDepositCrossRefDao;
 import com.example.piggybankpro.data.local.dao.TransactionDao;
-import com.example.piggybankpro.data.local.database.migrations.Migration2to3;
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
@@ -30,7 +21,7 @@ import com.example.piggybankpro.data.local.entities.TransactionEntity;
                 GoalDepositCrossRefEntity.class,
                 TransactionEntity.class
         },
-        version = 2,
+        version = 3,
         exportSchema = true
 //        autoMigrations = {
 //                @AutoMigration(from = 2, to = 3)
@@ -39,7 +30,7 @@ import com.example.piggybankpro.data.local.entities.TransactionEntity;
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
-//    private static final Migration MIGRATION_2_3 = new Migration2to3();
+//    private static final Migration MIGRATION_2_3 = new Migration2to4();
 //
 //    public static AppDatabase create(Context context) {
 //        Log.d("Database", "Start");
