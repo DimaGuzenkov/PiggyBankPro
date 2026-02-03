@@ -21,7 +21,7 @@ import java.util.List;
 
 public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.CrossRefsViewHolder> {
     private List<GoalDepositCrossRefEntity> crossRefs;
-    private OnCrossRefsChangeListener listener;
+    private final OnCrossRefsChangeListener listener;
 
     public interface OnCrossRefsChangeListener {
         boolean onChange();
@@ -85,13 +85,12 @@ public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.Cros
 
     public class CrossRefsViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTitle;
-        private final ImageButton deleteButton;
         private final EditText editTextAmount;
 
         public CrossRefsViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
-            deleteButton = itemView.findViewById(R.id.button_delete);
+            ImageButton deleteButton = itemView.findViewById(R.id.button_delete);
             editTextAmount = itemView.findViewById(R.id.edit_text_amount);
 
             editTextAmount.addTextChangedListener(new AmountTextWatcher(editTextAmount));
@@ -134,12 +133,6 @@ public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.Cros
             if (crossRef.getAmount() != null) {
                 editTextAmount.setText(AmountUtils.formatAmount(crossRef.getAmount()));
             }
-
-//            deleteButton.setOnClickListener(v -> {
-//                crossRefs.remove(crossRef);
-//                listener.onChange();
-//                listener.onCrossRefsCountChange();
-//            });
         }
     }
 }

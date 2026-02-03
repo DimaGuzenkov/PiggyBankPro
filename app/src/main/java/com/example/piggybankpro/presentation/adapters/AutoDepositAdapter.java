@@ -85,7 +85,7 @@ public class AutoDepositAdapter extends RecyclerView.Adapter<AutoDepositAdapter.
         return autoDeposits != null ? autoDeposits.size() : 0;
     }
 
-    class AutoDepositViewHolder extends RecyclerView.ViewHolder {
+    public static class AutoDepositViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView textViewName;
         TextView textViewAmount;

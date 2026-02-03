@@ -3,7 +3,6 @@ package com.example.piggybankpro.presentation.adapters;
 import static com.example.piggybankpro.presentation.utils.AmountUtils.formatAmount;
 import static com.example.piggybankpro.presentation.utils.DateUtils.formatDate;
 
-import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public int getItemCount() {
-        return transactions != null ? transactions.size() : 0;
+        return transactions.size();
     }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
@@ -57,7 +56,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         private final TextView textViewDate;
         private final TextView textViewType;
         private final View typeIndicator;
-        private final ImageButton deleteButton;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,7 +64,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             textViewDate = itemView.findViewById(R.id.text_view_date);
             textViewType = itemView.findViewById(R.id.text_view_type);
             typeIndicator = itemView.findViewById(R.id.view_type_indicator);
-            deleteButton = itemView.findViewById(R.id.button_delete);
+            ImageButton deleteButton = itemView.findViewById(R.id.button_delete);
 
             deleteButton.setOnClickListener(v -> {
 

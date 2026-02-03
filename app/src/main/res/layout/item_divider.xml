@@ -8,11 +8,11 @@
     android:focusable="true"
     android:orientation="horizontal"
     android:layout_marginHorizontal="12dp">
-    <LinearLayout
-        android:id="@+id/divider_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_400"
-        android:layout_gravity="center"
-        android:orientation="horizontal" />
+<!--    <LinearLayout-->
+<!--        android:id="@+id/divider_line"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/background"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:orientation="horizontal" />-->
 </LinearLayout>

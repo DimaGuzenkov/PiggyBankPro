@@ -15,13 +15,13 @@ import java.util.List;
 public class GoalSelectionAdapter extends RecyclerView.Adapter<GoalSelectionAdapter.GoalViewHolder> {
 
     private List<GoalEntity> goals;
-    private OnGoalClickListener listener;
+    private final OnGoalClickListener listener;
 
     public interface OnGoalClickListener {
         void onGoalClick(GoalEntity goal);
     }
 
-    static class GoalViewHolder extends RecyclerView.ViewHolder {
+    public static class GoalViewHolder extends RecyclerView.ViewHolder {
         TextView textName;
 
         GoalViewHolder(@NonNull View itemView) {

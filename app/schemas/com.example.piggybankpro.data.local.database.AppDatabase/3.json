@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "8f929c2adf0075eaae77af58dbe61baf",
+    "identityHash": "aa324a99e2dc4fb35a7b42bfaa300b3d",
     "entities": [
       {
         "tableName": "goals",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT DEFAULT 'Новая цель', `description` TEXT, `target_amount` REAL, `current_amount` REAL NOT NULL DEFAULT 0.0, `calculated_amount` REAL NOT NULL DEFAULT 0.0, `currency` TEXT DEFAULT 'RUB', `target_date` INTEGER, `created_at` INTEGER, `updated_at` INTEGER, `color` INTEGER, `goal_url` TEXT, `parent_id` TEXT, `order_position` INTEGER DEFAULT 0, `is_completed` INTEGER DEFAULT 0, `completed_date` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`parent_id`) REFERENCES `goals`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL DEFAULT 'Новая цель', `description` TEXT, `target_amount` REAL, `current_amount` REAL NOT NULL DEFAULT 0.0, `calculated_amount` REAL NOT NULL DEFAULT 0.0, `currency` TEXT DEFAULT 'RUB', `target_date` INTEGER, `created_at` INTEGER, `updated_at` INTEGER, `color` INTEGER, `goal_url` TEXT, `parent_id` TEXT NOT NULL DEFAULT '', `order_position` INTEGER DEFAULT 0, `is_completed` INTEGER DEFAULT 0, `completed_date` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`parent_id`) REFERENCES `goals`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -18,7 +18,7 @@
             "fieldPath": "title",
             "columnName": "title",
             "affinity": "TEXT",
-            "notNull": false,
+            "notNull": true,
             "defaultValue": "'Новая цель'"
           },
           {
@@ -88,7 +88,8 @@
             "fieldPath": "parentId",
             "columnName": "parent_id",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true,
+            "defaultValue": "''"
           },
           {
             "fieldPath": "orderPosition",
@@ -489,7 +490,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8f929c2adf0075eaae77af58dbe61baf')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aa324a99e2dc4fb35a7b42bfaa300b3d')"
     ]
   }
 }

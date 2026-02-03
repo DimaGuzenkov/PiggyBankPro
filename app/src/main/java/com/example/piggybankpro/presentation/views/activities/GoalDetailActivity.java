@@ -241,6 +241,8 @@ public class GoalDetailActivity extends AppCompatActivity {
     private void editGoal() {
         Intent intent = new Intent(this, CreateGoalActivity.class);
         intent.putExtra("goal_id", goalId);
+        intent.putExtra("parent_id", currentGoal.getParentId());
+        intent.putExtra("order_position", currentGoal.getOrderPosition());
         startActivity(intent);
     }
 

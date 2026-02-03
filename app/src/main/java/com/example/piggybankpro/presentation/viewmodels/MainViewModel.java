@@ -4,11 +4,14 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
 import com.example.piggybankpro.data.repository.GoalRepository;
 import com.example.piggybankpro.data.repository.RepositoryFactory;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 public class MainViewModel extends AndroidViewModel {
@@ -17,34 +20,78 @@ public class MainViewModel extends AndroidViewModel {
     private final MutableLiveData<String> currentParentId = new MutableLiveData<>(null);
     private final Stack<String> navigationStack = new Stack<>();
 
-    private final MutableLiveData<String> currentParentTitle = new MutableLiveData<>("Мои цели");
-    private final MutableLiveData<Double> currentParentAmount = new MutableLiveData<>(0.0);
-    private final MutableLiveData<Boolean> showBackButton = new MutableLiveData<>(false);
+    private LiveData<List<GoalEntity>> currentGoals;
+
+    public LiveData<String> currentParentTitle;
+    public LiveData<Double> currentParentAmount;
+    public LiveData<Boolean> showBackButton;
+
+    private final MediatorLiveData<Double> totalSavedAmount = new MediatorLiveData<>();
+    private LiveData<Double> currentTotalSource;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
         goalRepository = RepositoryFactory.getInstance(application).getGoalRepository();
+
+        initLiveData();
     }
 
-    // Получение данных с учетом текущего родителя
+    private void initLiveData() {
+        currentGoals = Transformations.switchMap(currentParentId, goalRepository::getSubGoals);
+
+        LiveData<GoalEntity> currentParentGoal = Transformations.switchMap(currentParentId, parentId -> {
+            if (parentId == null) {
+                return AbsentLiveData.create();
+            } else {
+                return goalRepository.getGoalById(parentId);
+            }
+        });
+
+        // Производные LiveData
+        currentParentTitle = Transformations.map(currentParentGoal, goal ->
+                goal != null ? goal.getTitle() : "Мои цели"
+        );
+
+        currentParentAmount = Transformations.map(currentParentGoal, goal ->
+                goal != null ? goal.getCurrentAmount() : 0.0
+        );
+
+        showBackButton = Transformations.map(currentParentId, Objects::nonNull);
+
+        // Динамически меняем источник totalSavedAmount в зависимости от currentParentId
+        totalSavedAmount.addSource(currentParentId, parentId -> {
+            // Удаляем предыдущий источник, если он есть
+            if (currentTotalSource != null) {
+                totalSavedAmount.removeSource(currentTotalSource);
+            }
+
+            // Подписываемся на новый источник
+            currentTotalSource = goalRepository.getTotalSavedAmount(parentId);
+            totalSavedAmount.addSource(currentTotalSource, totalSavedAmount::setValue);
+        });
+    }
+
     public LiveData<List<GoalEntity>> getCurrentGoals() {
-        if (currentParentId.getValue() == null) {
-            return goalRepository.getRootGoals();
-        } else {
-            return goalRepository.getSubGoals(currentParentId.getValue());
-        }
+        return currentGoals;
     }
 
+    public LiveData<Double> getTotalSavedAmount() {
+        return totalSavedAmount;
+    }
+
+    public String getCurrentParentId() {
+        return currentParentId.getValue();
+    }
+
+    // Навигация
     public void navigateToGoal(GoalEntity goal) {
         navigationStack.push(currentParentId.getValue());
         currentParentId.setValue(goal.getId());
-        updateNavigationState();
     }
 
     public boolean navigateBack() {
         if (!navigationStack.isEmpty()) {
             currentParentId.setValue(navigationStack.pop());
-            updateNavigationState();
             return true;
         }
         return false;
@@ -63,62 +110,48 @@ public class MainViewModel extends AndroidViewModel {
         goalRepository.update(goal);
     }
 
-    // Навигация
+    public void deleteGoal(GoalEntity goal) {
+        goalRepository.delete(goal);
+    }
+
     public void setCurrentParentId(String parentId) {
+        navigationStack.clear();
         currentParentId.setValue(parentId);
-        updateNavigationState();
-    }
-
-    public String getCurrentParentId() {
-        return currentParentId.getValue();
-    }
-
-    public LiveData<String> getCurrentParentTitle() {
-        return currentParentTitle;
-    }
-
-    public MutableLiveData<Double> getCurrentParentAmount() {
-        return currentParentAmount;
-    }
-
-    public LiveData<Boolean> getShowBackButton() {
-        return showBackButton;
-    }
-
-    private void updateNavigationState() {
-        String parentId = currentParentId.getValue();
-        showBackButton.setValue(parentId != null);
-
-        if (parentId == null) {
-            currentParentTitle.setValue("Мои цели");
-        } else {
-            goalRepository.getGoalById(parentId).observeForever(goal -> {
-                if (goal != null) {
-                    currentParentTitle.setValue(goal.getTitle());
-                    currentParentAmount.setValue(goal.getCurrentAmount());
-                } else {
-                    currentParentTitle.setValue("Вложенные цели");
-                    currentParentAmount.setValue(0.0);
-                }
-            });
-        }
     }
 
     public void updatePosition(GoalEntity draggedGoal, int newPosition, List<GoalEntity> goals) {
-        int step = newPosition > draggedGoal.getOrderPosition() ? -1 : 1;
-        if (newPosition > draggedGoal.getOrderPosition()) {
-            --newPosition;
+        if (newPosition == draggedGoal.getOrderPosition()) {
+            return;
         }
-        for (int i = newPosition; i != draggedGoal.getOrderPosition(); i += step) {
-            var goal = goals.get(i);
-            goal.setOrderPosition(goal.getOrderPosition() + step);
-            goalRepository.update(goal);
-        }
-        draggedGoal.setOrderPosition(newPosition);
-        goalRepository.update(draggedGoal);
+
+        goals.remove(draggedGoal);
+        goals.add(newPosition, draggedGoal);
+        goalRepository.updatePositions(goals);
+
+//        int step = newPosition > draggedGoal.getOrderPosition() ? -1 : 1;
+//        if (newPosition > draggedGoal.getOrderPosition()) {
+//            --newPosition;
+//        }
+//        for (int i = newPosition; i != draggedGoal.getOrderPosition(); i += step) {
+//            var goal = goals.get(i);
+//            goal.setOrderPosition(goal.getOrderPosition() + step);
+//            goalRepository.update(goal);
+//        }
+//        draggedGoal.setOrderPosition(newPosition);
+//        goalRepository.update(draggedGoal);
     }
 
-    public LiveData<Double> getTotalSavedAmount() {
-        return goalRepository.getTotalSavedAmount(currentParentId.getValue());
+    public void updatePositions(List<GoalEntity> goals) {
+        goalRepository.updatePositions(goals);
+    }
+
+    public static class AbsentLiveData<T> extends LiveData<T> {
+        public static <T> LiveData<T> create() {
+            return new AbsentLiveData<>();
+        }
+
+        private AbsentLiveData() {
+            postValue(null);
+        }
     }
 }

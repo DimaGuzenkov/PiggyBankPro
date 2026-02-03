@@ -37,7 +37,8 @@ public class GoalEntity {
     private String id = UUID.randomUUID().toString();
 
     @ColumnInfo(name = "title", defaultValue = "Новая цель")
-    private String title;
+//    @NonNull
+    private String title = "Новая цель";
 
     @ColumnInfo(name = "description")
     private String description;
@@ -83,6 +84,14 @@ public class GoalEntity {
     @ColumnInfo(name = "completed_date")
     private Date completedDate;
 
+    public Date getCompletedDate2() {
+        return completedDate2;
+    }
+
+    public void setCompletedDate2(Date completedDate2) {
+        this.completedDate2 = completedDate2;
+    }
+
     @ColumnInfo(name = "completed_date2")
     private Date completedDate2;
 
@@ -90,14 +99,14 @@ public class GoalEntity {
     }
 
     @Ignore
-    public GoalEntity(String title) {
+    public GoalEntity(@NonNull String title) {
         this.title = title;
         this.createdAt = new Date();
         this.updatedAt = new Date();
     }
 
     @Ignore
-    public GoalEntity(String title, Double targetAmount, Date targetDate) {
+    public GoalEntity(@NonNull String title, Double targetAmount, Date targetDate) {
         this.title = title;
         this.targetAmount = targetAmount;
         this.targetDate = targetDate;
@@ -114,6 +123,7 @@ public class GoalEntity {
         this.id = id;
     }
 
+    @NonNull
     public String getTitle() {
         return title;
     }
@@ -220,6 +230,7 @@ public class GoalEntity {
         this.updatedAt = new Date();
     }
 
+//    @NonNull
     public String getParentId() {
         return parentId;
     }
@@ -234,7 +245,10 @@ public class GoalEntity {
     }
 
     public void setOrderPosition(Integer orderPosition) {
-        this.orderPosition = orderPosition;
+//        if (orderPosition < 0) {
+//            throw new IllegalArgumentException("Order position should be grater or equals zero");
+//        }
+        this.orderPosition = Math.max(orderPosition, 0);
         this.updatedAt = new Date();
     }
 
@@ -259,14 +273,6 @@ public class GoalEntity {
     public void setCompletedDate(Date completedDate) {
         this.completedDate = completedDate;
         this.updatedAt = new Date();
-    }
-
-    public Date getCompletedDate2() {
-        return completedDate2;
-    }
-
-    public void setCompletedDate2(Date completedDate2) {
-        this.completedDate2 = completedDate2;
     }
 
     public Double getProgressPercentage() {

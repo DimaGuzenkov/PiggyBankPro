@@ -2,6 +2,7 @@ package com.example.piggybankpro.data.repository;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.example.piggybankpro.data.local.database.AppDatabase;
@@ -157,11 +158,20 @@ public class GoalRepository {
         });
     }
 
-    public LiveData<List<GoalEntity>> getRootGoals() {
-        return goalDao.getRootGoals();
+    public void updatePositions(List<GoalEntity> goals) {
+        for (int i = 0; i < goals.size(); ++i) {
+            var goal = goals.get(i);
+            if (goal.getOrderPosition() != i) {
+                goal.setOrderPosition(i);
+                update(goal);
+            }
+        }
     }
 
     public LiveData<List<GoalEntity>> getSubGoals(String parentId) {
+        if (parentId == null) {
+            return goalDao.getRootGoals();
+        }
         return goalDao.getSubGoals(parentId);
     }
 
