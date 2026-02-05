@@ -64,7 +64,10 @@ public class GoalRepository {
     }
 
     public void delete(GoalEntity goal) {
-        executor.execute(() -> goalDao.deleteWithParentUpdate(goal));
+        executor.execute(() -> {
+            transactionDao.deleteByGoalId(goal.getId());
+            goalDao.deleteWithParentUpdate(goal);
+        });
     }
 
     public void deposit(String goalId, Double amount, String description) {
@@ -140,16 +143,14 @@ public class GoalRepository {
                         sourceGoalId,
                         destGoal.getTitle(),
                         -amount,
-                        description,
-                        TransactionEntity.TYPE_TRANSFER
+                        description
                 );
 
                 TransactionEntity destTransaction = new TransactionEntity(
                         destGoalId,
                         sourceGoal.getTitle(),
                         amount,
-                        description,
-                        TransactionEntity.TYPE_TRANSFER
+                        description
                 );
                 transactionDao.insert(sourceTransaction);
                 transactionDao.insert(destTransaction);

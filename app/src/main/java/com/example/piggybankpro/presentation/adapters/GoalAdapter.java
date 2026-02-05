@@ -199,7 +199,11 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 case DragEvent.ACTION_DROP:
                     if (draggedGoal != null && insertIndex != -1) {
-                        listener.onGoalDroppedBetween(draggedGoal, insertIndex);
+                        if (draggedGoal.getOrderPosition() < insertIndex) {
+                            listener.onGoalDroppedBetween(draggedGoal, insertIndex - 1);
+                        } else {
+                            listener.onGoalDroppedBetween(draggedGoal, insertIndex);
+                        }
                     }
 
                     highlightedDividerPosition = -1;

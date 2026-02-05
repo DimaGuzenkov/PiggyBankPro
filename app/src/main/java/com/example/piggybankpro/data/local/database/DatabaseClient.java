@@ -22,7 +22,7 @@ public class DatabaseClient {
                         AppDatabase.class,
                         "savings_goals_db"
                 )
-                .addMigrations(MIGRATION_2_4)  // Используем статическую миграцию
+//                .addMigrations(MIGRATION_2_4)  // Используем статическую миграцию
                 .addCallback(new RoomDatabase.Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {

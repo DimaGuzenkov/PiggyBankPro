@@ -64,13 +64,10 @@ public class AutoDepositRepository {
 
     public void update(AutoDepositEntity autoDeposit, List<GoalDepositCrossRefEntity> crossRefs) {
         executor.execute(() -> {
-            // Обновляем автопополнение
             autoDepositDao.update(autoDeposit);
 
-            // Удаляем старые связи
             crossRefDao.deleteByDepositId(autoDeposit.getId());
 
-            // Добавляем новые связи
             if (crossRefs != null && !crossRefs.isEmpty()) {
                 for (GoalDepositCrossRefEntity crossRef : crossRefs) {
                     crossRef.setAutoDepositId(autoDeposit.getId());
@@ -83,7 +80,6 @@ public class AutoDepositRepository {
     public void delete(AutoDepositEntity autoDeposit) {
         executor.execute(() -> {
             crossRefDao.deleteByDepositId(autoDeposit.getId());
-
             autoDepositDao.delete(autoDeposit);
         });
     }

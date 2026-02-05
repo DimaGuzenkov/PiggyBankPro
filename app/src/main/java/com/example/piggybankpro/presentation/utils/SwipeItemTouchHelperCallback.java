@@ -62,7 +62,7 @@ public class SwipeItemTouchHelperCallback extends ItemTouchHelper.Callback {
     public void clearView(@NonNull RecyclerView recyclerView,
                           @NonNull RecyclerView.ViewHolder viewHolder) {
         if (viewHolder == this.viewHolder) {
-            listener.deleteItem(viewHolder.getAbsoluteAdapterPosition());
+            listener.deleteItem(viewHolder.getAbsoluteAdapterPosition() / 2);
             this.viewHolder = null;
         }
 

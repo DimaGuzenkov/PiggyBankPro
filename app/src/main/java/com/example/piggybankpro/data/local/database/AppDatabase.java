@@ -21,7 +21,7 @@ import com.example.piggybankpro.data.local.entities.TransactionEntity;
                 GoalDepositCrossRefEntity.class,
                 TransactionEntity.class
         },
-        version = 3,
+        version = 6,
         exportSchema = true
 //        autoMigrations = {
 //                @AutoMigration(from = 2, to = 3)

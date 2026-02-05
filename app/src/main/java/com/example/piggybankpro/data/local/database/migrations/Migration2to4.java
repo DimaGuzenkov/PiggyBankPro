@@ -36,13 +36,13 @@ public class Migration2to4 extends Migration {
             "updated_at, " +
             "color, " +
             "goal_url, " +
-            "parent_id, " +
+            "CASE WHEN parent_id='' THEN NULL ELSE parent_id END, " +
             "order_position, " +
             "is_completed, " +
             "completed_date ";
 
     public Migration2to4() {
-        super(3, 4);
+        super(5, 6);
     }
 
     @Override

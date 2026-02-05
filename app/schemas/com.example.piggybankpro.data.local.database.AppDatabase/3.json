@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "fa96c0007d24288a022ffe013ba37028",
+    "identityHash": "3cdaa81c012373cecd94219ee5090686",
     "entities": [
       {
         "tableName": "goals",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL DEFAULT 'Новая цель', `description` TEXT, `target_amount` REAL, `current_amount` REAL NOT NULL DEFAULT 0.0, `calculated_amount` REAL NOT NULL DEFAULT 0.0, `currency` TEXT DEFAULT 'RUB', `target_date` INTEGER, `created_at` INTEGER, `updated_at` INTEGER, `color` INTEGER, `goal_url` TEXT, `parent_id` TEXT, `order_position` INTEGER DEFAULT 0, `is_completed` INTEGER DEFAULT 0, `completed_date` INTEGER, `completed_date2` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`parent_id`) REFERENCES `goals`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT NOT NULL DEFAULT 'Новая цель', `description` TEXT, `target_amount` REAL, `current_amount` REAL NOT NULL DEFAULT 0.0, `calculated_amount` REAL NOT NULL DEFAULT 0.0, `currency` TEXT DEFAULT 'RUB', `target_date` INTEGER, `created_at` INTEGER, `updated_at` INTEGER, `color` INTEGER, `goal_url` TEXT, `parent_id` TEXT, `order_position` INTEGER NOT NULL DEFAULT 0, `is_completed` INTEGER DEFAULT 0, `completed_date` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`parent_id`) REFERENCES `goals`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -94,7 +94,7 @@
             "fieldPath": "orderPosition",
             "columnName": "order_position",
             "affinity": "INTEGER",
-            "notNull": false,
+            "notNull": true,
             "defaultValue": "0"
           },
           {
@@ -107,12 +107,6 @@
           {
             "fieldPath": "completedDate",
             "columnName": "completed_date",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "completedDate2",
-            "columnName": "completed_date2",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -495,7 +489,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fa96c0007d24288a022ffe013ba37028')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3cdaa81c012373cecd94219ee5090686')"
     ]
   }
 }

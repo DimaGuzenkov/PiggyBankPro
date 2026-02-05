@@ -20,4 +20,7 @@ public interface TransactionDao {
 
     @Query("SELECT * FROM transactions WHERE goal_id = :goalId ORDER BY transaction_date DESC")
     LiveData<List<TransactionEntity>> getTransactionsByGoalId(String goalId);
+
+    @Query("DELETE FROM transactions WHERE goal_id = :goalId")
+    void deleteByGoalId(String goalId);
 }

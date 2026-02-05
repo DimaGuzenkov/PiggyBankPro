@@ -41,9 +41,9 @@ public interface GoalDao {
 
         updateCalculatedAmountForGoal(goal.getId());
 
-        if (goal.getParentId() != null) {
-            updateCalculatedAmountForAncestors(goal.getParentId());
-        }
+        updateCalculatedAmountForAncestors(goal.getParentId());
+
+        updatePositions(goal.getParentId());
     }
 
     default void updateCalculatedAmountForAncestors(String id) {
@@ -51,6 +51,18 @@ public interface GoalDao {
             updateCalculatedAmountForAncestor(id);
             id = getGoalByIdSync(id).getParentId();
         }
+    }
+
+    default void updatePositions(String parentId) {
+        var goals = parentId == null ? getRootGoalsSync() : getSubGoalsSync(parentId);
+        for (int i = 0; i < goals.size(); ++i) {
+            var goal = goals.get(i);
+            if (goal.getOrderPosition() != i) {
+                goal.setOrderPosition(i);
+                update(goal);
+            }
+        }
+
     }
 
     /**
@@ -74,6 +86,9 @@ public interface GoalDao {
         if (needToUpdate || newParentId != null && !newParentId.equals(oldParentId)) {
             updateCalculatedAmountForAncestors(newParentId);
         }
+
+        updatePositions(oldParentId);
+        updatePositions(newParentId);
     }
 
     /**
@@ -87,9 +102,8 @@ public interface GoalDao {
 
         Log.d("GoalsUpdate", "Delete with parent id " + parentId);
 
-        if (parentId != null) {
-            updateCalculatedAmountForAncestors(parentId);
-        }
+        updateCalculatedAmountForAncestors(parentId);
+        updatePositions(parentId);
     }
 
     // ========== Методы для обновления кэша ==========
@@ -126,6 +140,12 @@ public interface GoalDao {
 
     @Query("SELECT * FROM goals WHERE parent_id = :parentId ORDER BY order_position, created_at DESC")
     LiveData<List<GoalEntity>> getSubGoals(String parentId);
+
+    @Query("SELECT * FROM goals WHERE parent_id IS NULL ORDER BY order_position, created_at DESC")
+    List<GoalEntity> getRootGoalsSync();
+
+    @Query("SELECT * FROM goals WHERE parent_id = :parentId ORDER BY order_position, created_at DESC")
+    List<GoalEntity> getSubGoalsSync(String parentId);
 
     @Query("SELECT SUM(calculated_amount) FROM goals WHERE parent_id = :parentId")
     LiveData<Double> getTotalSavedAmount(String parentId);

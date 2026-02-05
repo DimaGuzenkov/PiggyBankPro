@@ -55,8 +55,7 @@ public class MainActivity extends AppCompatActivity implements SwipeItemTouchHel
         setupFloatingActionButton();
         setupDragAndDrop();
 
-        SwipeItemTouchHelperCallback callback = new SwipeItemTouchHelperCallback(this);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        var itemTouchHelper = new ItemTouchHelper(new SwipeItemTouchHelperCallback(this));
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewGoals);
     }
 
@@ -124,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements SwipeItemTouchHel
 
     @Override
     public void onGoalDroppedBetween(GoalEntity draggedGoal, int insertIndex) {
-        mainViewModel.updatePosition(draggedGoal, insertIndex, goalAdapter.getGoals());
+        mainViewModel.updatePosition(draggedGoal, insertIndex);
         ToastUtils.display(MainActivity.this,
                 "Цель '" + draggedGoal.getTitle() + "' перемещена в '" + insertIndex + "'");
     }
@@ -173,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements SwipeItemTouchHel
 
         mainViewModel.getCurrentGoals().observe(this, goals -> {
             if (goals != null) {
-                mainViewModel.updatePositions(goals);
                 goalAdapter.updateGoals(goals);
                 binding.textViewEmptyState.setVisibility(View.GONE);
                 binding.recyclerViewGoals.setVisibility(View.VISIBLE);
@@ -230,10 +228,7 @@ public class MainActivity extends AppCompatActivity implements SwipeItemTouchHel
         new AlertDialog.Builder(this)
                 .setTitle("Удаление цели")
                 .setMessage("Вы уверены, что хотите удалить эту цель? Все связанные транзакции также будут удалены.\n" + goalAdapter.getGoalByPosition(position).getTitle())
-                .setPositiveButton("Удалить", (dialog, which) -> {
-                    mainViewModel.deleteGoal(goalAdapter.getGoalByPosition(position));
-                    goalAdapter.removeItem(position);
-                })
+                .setPositiveButton("Удалить", (dialog, which) -> mainViewModel.deleteGoal(goalAdapter.getGoalByPosition(position)))
                 .setNegativeButton("Отмена", null)
                 .show();
     }

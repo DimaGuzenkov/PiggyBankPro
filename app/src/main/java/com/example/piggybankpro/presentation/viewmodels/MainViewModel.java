@@ -99,6 +99,7 @@ public class MainViewModel extends AndroidViewModel {
 
     public void dropInto(GoalEntity droppedGoal, GoalEntity targetGoal) {
         droppedGoal.setParentId(targetGoal.getId());
+        droppedGoal.setOrderPosition(0);
         goalRepository.update(droppedGoal);
     }
 
@@ -107,6 +108,7 @@ public class MainViewModel extends AndroidViewModel {
             return;
         }
         goal.setParentId(navigationStack.peek());
+        goal.setOrderPosition(0);
         goalRepository.update(goal);
     }
 
@@ -119,30 +121,16 @@ public class MainViewModel extends AndroidViewModel {
         currentParentId.setValue(parentId);
     }
 
-    public void updatePosition(GoalEntity draggedGoal, int newPosition, List<GoalEntity> goals) {
+    public void updatePosition(GoalEntity draggedGoal, int newPosition) {
         if (newPosition == draggedGoal.getOrderPosition()) {
             return;
         }
 
-        goals.remove(draggedGoal);
-        goals.add(newPosition, draggedGoal);
-        goalRepository.updatePositions(goals);
-
-//        int step = newPosition > draggedGoal.getOrderPosition() ? -1 : 1;
-//        if (newPosition > draggedGoal.getOrderPosition()) {
-//            --newPosition;
-//        }
-//        for (int i = newPosition; i != draggedGoal.getOrderPosition(); i += step) {
-//            var goal = goals.get(i);
-//            goal.setOrderPosition(goal.getOrderPosition() + step);
-//            goalRepository.update(goal);
-//        }
-//        draggedGoal.setOrderPosition(newPosition);
-//        goalRepository.update(draggedGoal);
+        draggedGoal.setOrderPosition(newPosition);
     }
 
-    public void updatePositions(List<GoalEntity> goals) {
-        goalRepository.updatePositions(goals);
+    public LiveData<List<GoalEntity>> getAllGoals() {
+        return goalRepository.getAllGoals();
     }
 
     public static class AbsentLiveData<T> extends LiveData<T> {

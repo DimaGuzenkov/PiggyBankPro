@@ -94,11 +94,11 @@ public class TransactionEntity {
     }
 
     @Ignore
-    public TransactionEntity(String goalId, String transferGoalName, Double amount, String description, Integer transactionType) {
+    public TransactionEntity(String goalId, String transferGoalName, Double amount, String description) {
         this.goalId = goalId;
         this.transferGoalName = transferGoalName;
         this.amount = amount;
-        this.transactionType = transactionType;
+        this.transactionType = TYPE_TRANSFER;
         this.description = description != null && !description.isEmpty() ? description : getTransactionTypeString();
         this.transactionDate = new Date();
         this.createdAt = new Date();
