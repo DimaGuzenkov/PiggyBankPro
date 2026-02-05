@@ -38,7 +38,6 @@ public class AutoDepositRepository {
         executor = Executors.newSingleThreadExecutor();
     }
 
-    // Основные операции
     public LiveData<List<AutoDepositEntity>> getAllAutoDeposits() {
         return autoDepositDao.getAllAutoDeposits();
     }
@@ -49,10 +48,8 @@ public class AutoDepositRepository {
 
     public void insert(AutoDepositEntity autoDeposit, List<GoalDepositCrossRefEntity> crossRefs) {
         executor.execute(() -> {
-            // Сохраняем автопополнение
             autoDepositDao.insert(autoDeposit);
 
-            // Сохраняем связи с целями
             if (crossRefs != null && !crossRefs.isEmpty()) {
                 for (GoalDepositCrossRefEntity crossRef : crossRefs) {
                     crossRef.setAutoDepositId(autoDeposit.getId());
@@ -78,10 +75,7 @@ public class AutoDepositRepository {
     }
 
     public void delete(AutoDepositEntity autoDeposit) {
-        executor.execute(() -> {
-            crossRefDao.deleteByDepositId(autoDeposit.getId());
-            autoDepositDao.delete(autoDeposit);
-        });
+        executor.execute(() -> autoDepositDao.delete(autoDeposit));
     }
 
     public LiveData<List<GoalDepositCrossRefEntity>> getCrossRefsByDepositId(String depositId) {

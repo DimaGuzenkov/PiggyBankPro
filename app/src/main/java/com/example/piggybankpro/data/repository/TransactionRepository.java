@@ -31,9 +31,9 @@ public class TransactionRepository {
         });
     }
 
-    public void delete(String transactionId) {
+    public void delete(TransactionEntity transaction) {
         executor.execute(() -> {
-            transactionDao.delete(transactionId);
+            transactionDao.delete(transaction.getId());
         });
     }
 

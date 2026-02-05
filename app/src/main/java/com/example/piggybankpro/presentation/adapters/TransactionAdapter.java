@@ -50,6 +50,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return transactions.size();
     }
 
+    public TransactionEntity getItemByPosition(int position) {
+        return transactions.get(position);
+    }
+
     public static class TransactionViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewAmount;
         private final TextView textViewDescription;

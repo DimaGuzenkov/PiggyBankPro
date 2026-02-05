@@ -20,16 +20,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
+import com.example.piggybankpro.databinding.ActivityCreateAutoDepositBinding;
+import com.example.piggybankpro.databinding.ActivityMainBinding;
 import com.example.piggybankpro.presentation.adapters.CrossRefsAdapter;
 import com.example.piggybankpro.presentation.utils.AmountTextWatcher;
 import com.example.piggybankpro.presentation.utils.AmountUtils;
 import com.example.piggybankpro.presentation.utils.DateUtils;
+import com.example.piggybankpro.presentation.utils.SwipeItemTouchHelperCallback;
 import com.example.piggybankpro.presentation.utils.ToastUtils;
 import com.example.piggybankpro.presentation.viewmodels.AutoDepositViewModel;
 import com.example.piggybankpro.presentation.views.dialogs.GoalSelectionDialogFragment;
@@ -39,14 +43,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class CreateAutoDepositActivity extends AppCompatActivity {
-    private EditText editTextName;
-    private EditText editTextAmount;
-    private Spinner spinnerPeriod;;
-    private TextView textViewSumLeft;
-    private Button buttonSelectGoals;
-    private RecyclerView recyclerViewCrossRefs;
-    private Button buttonSave;
-    private TextView textViewEmpty;
+    private ActivityCreateAutoDepositBinding binding;
 
     private AutoDepositViewModel autoDepositViewModel;
     private CrossRefsAdapter crossRefsAdapter;
@@ -57,17 +54,17 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_auto_deposit);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        binding = ActivityCreateAutoDepositBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         autoDepositViewModel = new ViewModelProvider(this).get(AutoDepositViewModel.class);
 
         editingDepositId = getIntent().getStringExtra("auto_deposit_id");
 
-        initViews();
         setupRecyclerView();
         setupPeriodAdapter();
         setupListeners();
@@ -80,28 +77,17 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
         observeViewModel();
     }
 
-    private void initViews() {
-        editTextName = findViewById(R.id.edit_text_name);
-        editTextAmount = findViewById(R.id.edit_text_amount);
-        spinnerPeriod = findViewById(R.id.spinner_frequency);
-        textViewSumLeft = findViewById(R.id.sum_left);
-        buttonSelectGoals = findViewById(R.id.button_add_goal);
-        recyclerViewCrossRefs = findViewById(R.id.recycler_view_selected_goals);
-        buttonSave = findViewById(R.id.button_save);
-        textViewEmpty = findViewById(R.id.text_view_empty);
-
-        textViewEmpty.setVisibility(View.VISIBLE);
-        recyclerViewCrossRefs.setVisibility(View.GONE);
-    }
-
     private void setupRecyclerView() {
         crossRefsAdapter = new CrossRefsAdapter(new ArrayList<>(), new Listener());
-        recyclerViewCrossRefs.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewCrossRefs.setAdapter(crossRefsAdapter);
+        binding.recyclerViewCrossRefs.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerViewCrossRefs.setAdapter(crossRefsAdapter);
 
-        recyclerViewCrossRefs.addItemDecoration(
+        binding.recyclerViewCrossRefs.addItemDecoration(
             new DividerItemDecoration(this, LinearLayoutManager.VERTICAL)
         );
+
+        var itemTouchHelper = new ItemTouchHelper(new SwipeItemTouchHelperCallback(crossRefsAdapter));
+        itemTouchHelper.attachToRecyclerView(binding.recyclerViewCrossRefs);
     }
 
     private void setupPeriodAdapter() {
@@ -111,12 +97,12 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item
         );
         periodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPeriod.setAdapter(periodAdapter);
+        binding.spinnerFrequency.setAdapter(periodAdapter);
     }
 
     private void setupListeners() {
-        editTextAmount.addTextChangedListener(new AmountTextWatcher(editTextAmount));
-        editTextAmount.addTextChangedListener(new TextWatcher() {
+        binding.editTextAmount.addTextChangedListener(new AmountTextWatcher(binding.editTextAmount));
+        binding.editTextAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
@@ -132,8 +118,8 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
                 }
             }
         });
-        buttonSave.setOnClickListener(v -> saveAutoDeposit());
-        buttonSelectGoals.setOnClickListener(v -> {
+        binding.buttonSave.setOnClickListener(v -> saveAutoDeposit());
+        binding.buttonAddGoal.setOnClickListener(v -> {
             GoalSelectionDialogFragment dialog = GoalSelectionDialogFragment.newInstance();
             dialog.setOnGoalSelectedListener(goal -> {
                 crossRefsAdapter.addCrossRef(new GoalDepositCrossRefEntity(goal.getId(), goal.getTitle(), editingDepositId));
@@ -153,9 +139,9 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
                 return;
             }
 
-            editTextName.setText(autoDeposit.getName());
-            editTextAmount.setText(AmountUtils.formatAmount(autoDeposit.getAmount()));
-            spinnerPeriod.setSelection(autoDeposit.getPeriodType());
+            binding.editTextName.setText(autoDeposit.getName());
+            binding.editTextAmount.setText(AmountUtils.formatAmount(autoDeposit.getAmount()));
+            binding.spinnerFrequency.setSelection(autoDeposit.getPeriodType());
         });
     }
 
@@ -175,30 +161,30 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
     }
 
     private void saveAutoDeposit() {
-        String name = editTextName.getText().toString().trim();
+        String name = binding.editTextName.getText().toString().trim();
 
         if (name.isEmpty()) {
-            editTextName.setError("Введите название");
-            editTextName.requestFocus();
+            binding.editTextName.setError("Введите название");
+            binding.editTextName.requestFocus();
             return;
         }
 
-        var amount = amountFromString(editTextAmount.getText().toString()).result();
+        var amount = amountFromString(binding.editTextAmount.getText().toString()).result();
         if (amount == null) {
-            editTextAmount.setError("Неверный формат числа");
-            editTextAmount.requestFocus();
+            binding.editTextAmount.setError("Неверный формат числа");
+            binding.editTextAmount.requestFocus();
             return;
         }
 
         if (amount <= 0.0) {
-            editTextAmount.setError("Неверный формат числа");
-            editTextAmount.requestFocus();
+            binding.editTextAmount.setError("Неверный формат числа");
+            binding.editTextAmount.requestFocus();
             return;
         }
 
         if (amount < crossRefsAdapter.getTotalAmount()) {
-            editTextAmount.setError("Недостаточно средств для распределения");
-            editTextAmount.requestFocus();
+            binding.editTextAmount.setError("Недостаточно средств для распределения");
+            binding.editTextAmount.requestFocus();
             return;
         }
 
@@ -207,7 +193,7 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
         autoDeposit.setId(Objects.requireNonNullElseGet(editingDepositId, () -> UUID.randomUUID().toString()));
         autoDeposit.setName(name);
         autoDeposit.setAmount(amount);
-        autoDeposit.setPeriodType(DateUtils.getPeriodTypeFromPosition(spinnerPeriod.getSelectedItemPosition()));
+        autoDeposit.setPeriodType(DateUtils.getPeriodTypeFromPosition(binding.spinnerFrequency.getSelectedItemPosition()));
 
         if (editingDepositId != null) {
             autoDepositViewModel.updateAutoDeposit(autoDeposit, crossRefsAdapter.getCrossRefs());
@@ -222,13 +208,13 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
 
     private boolean updateSumLeft() {
         var text = amount - crossRefsAdapter.getTotalAmount();
-        textViewSumLeft.setText(AmountUtils.formatAmount(text));
+        binding.textViewSumLeft.setText(AmountUtils.formatAmount(text));
 
         if (text < 0.0) {
-            textViewSumLeft.setTextColor(Color.RED);
+            binding.textViewSumLeft.setTextColor(Color.RED);
             return false;
         } else {
-            textViewSumLeft.setTextColor(Color.GREEN);
+            binding.textViewSumLeft.setTextColor(Color.GREEN);
             return true;
         }
     }
@@ -248,11 +234,11 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
         @Override
         public void onCrossRefsCountChange() {
             if (crossRefsAdapter.getItemCount() == 0) {
-                textViewEmpty.setVisibility(TextView.VISIBLE);
-                recyclerViewCrossRefs.setVisibility(TextView.GONE);
+                binding.textViewEmpty.setVisibility(TextView.VISIBLE);
+                binding.recyclerViewCrossRefs.setVisibility(TextView.GONE);
             } else {
-                textViewEmpty.setVisibility(TextView.GONE);
-                recyclerViewCrossRefs.setVisibility(TextView.VISIBLE);
+                binding.textViewEmpty.setVisibility(TextView.GONE);
+                binding.recyclerViewCrossRefs.setVisibility(TextView.VISIBLE);
             }
         }
     }

@@ -16,10 +16,11 @@ import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
 import com.example.piggybankpro.presentation.utils.AmountTextWatcher;
 import com.example.piggybankpro.presentation.utils.AmountUtils;
+import com.example.piggybankpro.presentation.utils.SwipeItemTouchHelperCallback;
 
 import java.util.List;
 
-public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.CrossRefsViewHolder> {
+public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.CrossRefsViewHolder> implements SwipeItemTouchHelperCallback.OnSwipeListener {
     private List<GoalDepositCrossRefEntity> crossRefs;
     private final OnCrossRefsChangeListener listener;
 
@@ -83,6 +84,16 @@ public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.Cros
         return amount;
     }
 
+
+    @Override
+    public void deleteItem(int position) {
+        if (position != RecyclerView.NO_POSITION) {
+            var goal = crossRefs.get(position);
+            crossRefs.remove(goal);
+            update();
+        }
+    }
+
     public class CrossRefsViewHolder extends RecyclerView.ViewHolder {
         private final TextView textViewTitle;
         private final EditText editTextAmount;
@@ -90,7 +101,6 @@ public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.Cros
         public CrossRefsViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
-            ImageButton deleteButton = itemView.findViewById(R.id.button_delete);
             editTextAmount = itemView.findViewById(R.id.edit_text_amount);
 
             editTextAmount.addTextChangedListener(new AmountTextWatcher(editTextAmount));
@@ -115,15 +125,6 @@ public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.Cros
                         editTextAmount.setError("Недостаточно средств");
                         editTextAmount.requestFocus();
                     }
-                }
-            });
-
-            deleteButton.setOnClickListener(v -> {
-                int position = getAbsoluteAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    var goal = crossRefs.get(position);
-                    crossRefs.remove(goal);
-                    update();
                 }
             });
         }

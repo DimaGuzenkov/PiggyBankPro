@@ -32,7 +32,6 @@ import androidx.room.PrimaryKey;
         }
 )
 public class GoalDepositCrossRefEntity {
-
     @ColumnInfo(name = "goal_id")
     @NonNull
     private String goalId;

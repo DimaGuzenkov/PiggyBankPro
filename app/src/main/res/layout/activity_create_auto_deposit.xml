@@ -149,7 +149,7 @@
 
                     <!-- Поле для суммы с возможностью переноса и эллипсисом -->
                     <TextView
-                        android:id="@+id/sum_left"
+                        android:id="@+id/text_view_sum_left"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -186,7 +186,7 @@
 
             <!-- Список целей -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_selected_goals"
+                android:id="@+id/recycler_view_cross_refs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="200dp"

@@ -39,7 +39,6 @@ import java.util.UUID;
 )
 @TypeConverters(DateConverter.class)
 public class TransactionEntity {
-
     public static final int TYPE_DEPOSIT = 1;
     public static final int TYPE_WITHDRAWAL = 2;
     public static final int TYPE_TRANSFER = 3;
@@ -99,7 +98,7 @@ public class TransactionEntity {
         this.transferGoalName = transferGoalName;
         this.amount = amount;
         this.transactionType = TYPE_TRANSFER;
-        this.description = description != null && !description.isEmpty() ? description : getTransactionTypeString();
+        this.description = description;
         this.transactionDate = new Date();
         this.createdAt = new Date();
         this.updatedAt = new Date();
@@ -111,6 +110,7 @@ public class TransactionEntity {
         this.autoDepositId = autoDepositId;
         this.amount = amount;
         this.transactionType = TYPE_DEPOSIT;
+        // TODO сделать описание изменяемым
         this.description = "Автопополнение " + autoDepositName;
         this.transactionDate = new Date();
         this.createdAt = new Date();
@@ -181,7 +181,7 @@ public class TransactionEntity {
     }
 
     public String getDescription() {
-        return description;
+        return description != null && description.isEmpty() ? description : getTransactionTypeString();
     }
 
     public void setDescription(String description) {
@@ -222,18 +222,6 @@ public class TransactionEntity {
             return "Перевод из " + transferGoalName;
         }
         return "Перевод в " + transferGoalName;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "TransactionEntity{" +
-                "id='" + id + '\'' +
-                ", goalId='" + goalId + '\'' +
-                ", amount=" + amount +
-                ", type=" + getTransactionTypeString() +
-                ", date=" + transactionDate +
-                '}';
     }
 
     public String getTransferGoalName() {

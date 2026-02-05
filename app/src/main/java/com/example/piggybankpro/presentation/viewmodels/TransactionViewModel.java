@@ -24,12 +24,14 @@ public class TransactionViewModel extends AndroidViewModel {
         transactionRepository = RepositoryFactory.getInstance(application).getTransactionRepository();
     }
 
-    // Фильтрация
     public LiveData<List<TransactionEntity>> getTransactionsByGoalId(String goalId) {
         return transactionRepository.getTransactionsByGoalId(goalId);
     }
 
-    // Ошибки
+    public void deleteTransaction(TransactionEntity transaction) {
+        transactionRepository.delete(transaction);
+    }
+
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }

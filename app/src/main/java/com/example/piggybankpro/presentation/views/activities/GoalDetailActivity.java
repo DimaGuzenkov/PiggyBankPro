@@ -9,47 +9,30 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.TransactionEntity;
+import com.example.piggybankpro.databinding.ActivityGoalDetailBinding;
 import com.example.piggybankpro.presentation.adapters.TransactionAdapter;
+import com.example.piggybankpro.presentation.utils.SwipeItemTouchHelperCallback;
 import com.example.piggybankpro.presentation.utils.ViewUtils;
 import com.example.piggybankpro.presentation.viewmodels.GoalViewModel;
 import com.example.piggybankpro.presentation.viewmodels.TransactionViewModel;
 import com.example.piggybankpro.presentation.views.dialogs.ChangeAmountDialogs;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Objects;
 
-public class GoalDetailActivity extends AppCompatActivity {
-
-    private TextView textViewTitle;
-    private TextView textViewDescription;
-    private TextView textViewTargetAmount;
-    private TextView textViewCurrentAmount;
-    private TextView textViewProgressPercentage;
-    private TextView textViewDaysLeft;
-    private TextView textViewAmountNeeded;
-    private TextView textViewTargetDate;
-    private ProgressBar progressBarGoal;
-    private MaterialCardView cardViewProgress;
-    private MaterialButton buttonDeposit;
-    private MaterialButton buttonWithdraw;
-    private MaterialButton buttonTransfer;
-    private RecyclerView recyclerViewTransactions;
+public class GoalDetailActivity extends AppCompatActivity implements
+        SwipeItemTouchHelperCallback.OnSwipeListener {
+    private ActivityGoalDetailBinding binding;
 
     private GoalViewModel goalViewModel;
     private TransactionViewModel transactionViewModel;
@@ -62,7 +45,6 @@ public class GoalDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goal_detail);
 
         goalId = getIntent().getStringExtra("goal_id");
         if (goalId == null) {
@@ -71,15 +53,16 @@ public class GoalDetailActivity extends AppCompatActivity {
             return;
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        binding = ActivityGoalDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         goalViewModel = new ViewModelProvider(this).get(GoalViewModel.class);
         transactionViewModel = new ViewModelProvider(this).get(TransactionViewModel.class);
         dialogs = new ChangeAmountDialogs(this, goalViewModel);
 
-        initViews();
         setupRecyclerView();
         observeData();
         setupButtons();
@@ -87,40 +70,26 @@ public class GoalDetailActivity extends AppCompatActivity {
         loadTransactions();
     }
 
-    private void initViews() {
-        textViewTitle = findViewById(R.id.text_view_title);
-        textViewDescription = findViewById(R.id.text_view_description);
-        textViewTargetAmount = findViewById(R.id.text_view_target_amount);
-        textViewCurrentAmount = findViewById(R.id.text_view_current_amount);
-        textViewProgressPercentage = findViewById(R.id.text_view_progress_percentage);
-        textViewDaysLeft = findViewById(R.id.text_view_days_left);
-        textViewAmountNeeded = findViewById(R.id.text_view_amount_needed);
-        textViewTargetDate = findViewById(R.id.text_view_target_date);
-        progressBarGoal = findViewById(R.id.progress_bar_goal);
-        cardViewProgress = findViewById(R.id.card_view_progress);
-        buttonDeposit = findViewById(R.id.button_deposit);
-        buttonWithdraw = findViewById(R.id.button_withdraw);
-        buttonTransfer = findViewById(R.id.button_transfer);
-        recyclerViewTransactions = findViewById(R.id.recycler_view_transactions);
-    }
-
     private void setupRecyclerView() {
         transactionAdapter = new TransactionAdapter(new ArrayList<>());
-        recyclerViewTransactions.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewTransactions.setAdapter(transactionAdapter);
+        binding.recyclerViewTransactions.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerViewTransactions.setAdapter(transactionAdapter);
 
-        recyclerViewTransactions.addItemDecoration(
+        binding.recyclerViewTransactions.addItemDecoration(
                 new androidx.recyclerview.widget.DividerItemDecoration(
                         this,
                         LinearLayoutManager.VERTICAL
                 )
         );
+
+        var itemTouchHelper = new ItemTouchHelper(new SwipeItemTouchHelperCallback(this));
+        itemTouchHelper.attachToRecyclerView(binding.recyclerViewTransactions);
     }
 
     private void setupButtons() {
-        buttonDeposit.setOnClickListener(v -> dialogs.showDepositDialog(goalId));
-        buttonWithdraw.setOnClickListener(v -> dialogs.showWithdrawDialog(goalId, currentGoal.getCurrentAmount()));
-        buttonTransfer.setOnClickListener(v -> dialogs.showTransferDialog(goalId, currentGoal.getCurrentAmount()));
+        binding.buttonDeposit.setOnClickListener(v -> dialogs.showDepositDialog(goalId));
+        binding.buttonWithdraw.setOnClickListener(v -> dialogs.showWithdrawDialog(goalId, currentGoal.getCurrentAmount()));
+        binding.buttonTransfer.setOnClickListener(v -> dialogs.showTransferDialog(goalId, currentGoal.getCurrentAmount()));
     }
 
     private void observeData() {
@@ -159,58 +128,58 @@ public class GoalDetailActivity extends AppCompatActivity {
     }
 
     private void updateUI(GoalEntity goal) {
-        textViewTitle.setText(goal.getTitle());
+        binding.textViewTitle.setText(goal.getTitle());
 
         if (goal.getDescription() != null) {
-            textViewDescription.setText(goal.getDescription());
+            binding.textViewDescription.setText(goal.getDescription());
         } else {
-            textViewDescription.setText("Нет описания");
+            binding.textViewDescription.setText("Нет описания");
         }
 
         if (goal.getTargetAmount() != null) {
-            textViewTargetAmount.setText(formatAmount(goal.getTargetAmount()));
-            textViewTargetAmount.setVisibility(View.VISIBLE);
+            binding.textViewTargetAmount.setText(formatAmount(goal.getTargetAmount()));
+            binding.textViewTargetAmount.setVisibility(View.VISIBLE);
         } else {
-            textViewTargetAmount.setVisibility(View.GONE);
+            binding.textViewTargetAmount.setVisibility(View.GONE);
         }
 
-        textViewCurrentAmount.setText(formatAmount(goal.getCurrentAmount()));
+        binding.textViewCurrentAmount.setText(formatAmount(goal.getCurrentAmount()));
 
         if (goal.getProgressPercentage() != null && goal.getTargetAmount() != null) {
-            ViewUtils.updateGoalProgress(progressBarGoal, textViewProgressPercentage, goal.getProgressPercentage());
+            ViewUtils.updateGoalProgress(binding.progressBarGoal, binding.textViewProgressPercentage, goal.getProgressPercentage());
         } else {
-            progressBarGoal.setVisibility(View.GONE);
-            textViewProgressPercentage.setVisibility(View.GONE);
+            binding.progressBarGoal.setVisibility(View.GONE);
+            binding.textViewProgressPercentage.setVisibility(View.GONE);
         }
 
         Long daysLeft = goal.getDaysRemaining();
         if (daysLeft != null) {
-            textViewDaysLeft.setText(formatDays(daysLeft));
-            textViewDaysLeft.setVisibility(View.VISIBLE);
+            binding.textViewDaysLeft.setText(formatDays(daysLeft));
+            binding.textViewDaysLeft.setVisibility(View.VISIBLE);
         } else {
-            textViewDaysLeft.setVisibility(View.GONE);
+            binding.textViewDaysLeft.setVisibility(View.GONE);
         }
 
         Double amountNeeded = goal.getAmountNeeded();
         if (amountNeeded != null && amountNeeded > 0) {
-            textViewAmountNeeded.setText(formatAmount(amountNeeded));
-            textViewAmountNeeded.setVisibility(View.VISIBLE);
+            binding.textViewAmountNeeded.setText(formatAmount(amountNeeded));
+            binding.textViewAmountNeeded.setVisibility(View.VISIBLE);
         } else if (amountNeeded != null && amountNeeded <= 0) {
-            textViewAmountNeeded.setText("Цель достигнута!");
-            cardViewProgress.setCardBackgroundColor(
+            binding.textViewAmountNeeded.setText("Цель достигнута!");
+            binding.cardViewProgress.setCardBackgroundColor(
                     getResources().getColor(R.color.success_light, null)
             );
 
-            textViewAmountNeeded.setVisibility(View.VISIBLE);
+            binding.textViewAmountNeeded.setVisibility(View.VISIBLE);
         } else {
-            textViewAmountNeeded.setVisibility(View.GONE);
+            binding.textViewAmountNeeded.setVisibility(View.GONE);
         }
 
         if (goal.getTargetDate() != null) {
-            textViewTargetDate.setText(formatDate(goal.getTargetDate()));
-            textViewTargetDate.setVisibility(View.VISIBLE);
+            binding.textViewTargetDate.setText(formatDate(goal.getTargetDate()));
+            binding.textViewTargetDate.setVisibility(View.VISIBLE);
         } else {
-            textViewTargetDate.setVisibility(View.GONE);
+            binding.textViewTargetDate.setVisibility(View.GONE);
         }
     }
 
@@ -259,5 +228,13 @@ public class GoalDetailActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Отмена", null)
                 .show();
+    }
+
+    @Override
+    public void deleteItem(int position) {
+        var transaction = transactionAdapter.getItemByPosition(position);
+        if (transaction.getTransactionType() == TransactionEntity.TYPE_DEPOSIT) {
+
+        }
     }
 }

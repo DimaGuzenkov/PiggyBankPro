@@ -31,7 +31,6 @@ public class GoalRepository {
         executor = Executors.newSingleThreadExecutor();
     }
 
-    // Основные операции
     public LiveData<List<GoalEntity>> getAllGoals() {
         return allGoals;
     }
@@ -64,10 +63,7 @@ public class GoalRepository {
     }
 
     public void delete(GoalEntity goal) {
-        executor.execute(() -> {
-            transactionDao.deleteByGoalId(goal.getId());
-            goalDao.deleteWithParentUpdate(goal);
-        });
+        executor.execute(() -> goalDao.deleteWithParentUpdate(goal));
     }
 
     public void deposit(String goalId, Double amount, String description) {

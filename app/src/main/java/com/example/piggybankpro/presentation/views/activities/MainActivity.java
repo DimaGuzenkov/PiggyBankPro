@@ -31,7 +31,9 @@ import static com.example.piggybankpro.presentation.utils.AmountUtils.formatAmou
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements SwipeItemTouchHelperCallback.OnSwipeListener, GoalAdapter.OnGoalClickListener {
+public class MainActivity extends AppCompatActivity implements
+        SwipeItemTouchHelperCallback.OnSwipeListener,
+        GoalAdapter.OnGoalClickListener {
 
     private ActivityMainBinding binding;
     private MainViewModel mainViewModel;
