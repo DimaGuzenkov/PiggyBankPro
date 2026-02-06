@@ -14,6 +14,7 @@ import com.example.piggybankpro.data.local.dao.TransactionDao;
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.local.entities.TransactionEntity;
 
 import java.util.Date;
@@ -42,7 +43,7 @@ public class AutoDepositRepository {
         return autoDepositDao.getAllAutoDeposits();
     }
 
-    public LiveData<AutoDepositEntity> getAutoDepositById(String id) {
+    public LiveData<AutoDepositEntity> getAutoDepositById(Id id) {
         return autoDepositDao.getAutoDepositById(id);
     }
 
@@ -78,11 +79,11 @@ public class AutoDepositRepository {
         executor.execute(() -> autoDepositDao.delete(autoDeposit));
     }
 
-    public LiveData<List<GoalDepositCrossRefEntity>> getCrossRefsByDepositId(String depositId) {
+    public LiveData<List<GoalDepositCrossRefEntity>> getCrossRefsByDepositId(Id depositId) {
         return crossRefDao.getCrossRefsByDepositId(depositId);
     }
 
-    public void executeAutoDeposit(String depositId) {
+    public void executeAutoDeposit(Id depositId) {
         executor.execute(() -> {
             try {
                 AutoDepositEntity deposit = autoDepositDao.getAutoDepositByIdSync(depositId);
@@ -150,7 +151,7 @@ public class AutoDepositRepository {
         });
     }
 
-    public void setActive(String depositId, boolean isActive) {
+    public void setActive(Id depositId, boolean isActive) {
         executor.execute(() -> {
             autoDepositDao.setActive(depositId, isActive);
         });

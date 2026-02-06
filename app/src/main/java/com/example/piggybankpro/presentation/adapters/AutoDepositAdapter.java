@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
+import com.example.piggybankpro.databinding.ItemAutoDepositBinding;
+import com.example.piggybankpro.databinding.ItemGoalBinding;
+import com.example.piggybankpro.presentation.adapters.holders.AutoDepositViewHolder;
 import com.example.piggybankpro.presentation.utils.AmountTextWatcher;
 import com.example.piggybankpro.presentation.utils.AmountUtils;
 import com.example.piggybankpro.presentation.utils.DateUtils;
@@ -23,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class AutoDepositAdapter extends RecyclerView.Adapter<AutoDepositAdapter.AutoDepositViewHolder> {
+public class AutoDepositAdapter extends RecyclerView.Adapter<AutoDepositViewHolder> {
 
     public interface OnAutoDepositClickListener {
         void onAutoDepositClick(AutoDepositEntity autoDeposit);
@@ -47,23 +50,24 @@ public class AutoDepositAdapter extends RecyclerView.Adapter<AutoDepositAdapter.
     @NonNull
     @Override
     public AutoDepositViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_auto_deposit, parent, false);
-        return new AutoDepositViewHolder(view);
+        var inflater = LayoutInflater.from(parent.getContext());
+        var binding = ItemAutoDepositBinding.inflate(inflater, parent, false);
+        return new AutoDepositViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AutoDepositViewHolder holder, int position) {
         AutoDepositEntity autoDeposit = autoDeposits.get(position);
         holder.bind(autoDeposit);
+        var binding = holder.getBinding();
 
-        holder.cardView.setOnClickListener(v -> {
+        binding.cardViewAutoDeposit.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onAutoDepositClick(autoDeposit);
             }
         });
 
-        holder.cardView.setOnLongClickListener(v -> {
+        binding.cardViewAutoDeposit.setOnLongClickListener(v -> {
             if (listener != null) {
                 listener.onAutoDepositLongClick(autoDeposit, v);
                 return true;
@@ -71,9 +75,9 @@ public class AutoDepositAdapter extends RecyclerView.Adapter<AutoDepositAdapter.
             return false;
         });
 
-        holder.switchActive.setOnCheckedChangeListener(null); // Отключаем предыдущий слушатель
-        holder.switchActive.setChecked(autoDeposit.getIsActive());
-        holder.switchActive.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.switchActive.setOnCheckedChangeListener(null); // Отключаем предыдущий слушатель
+        binding.switchActive.setChecked(autoDeposit.getIsActive());
+        binding.switchActive.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (listener != null) {
                 listener.onToggleStatus(autoDeposit, isChecked);
             }
@@ -87,55 +91,5 @@ public class AutoDepositAdapter extends RecyclerView.Adapter<AutoDepositAdapter.
 
     public AutoDepositEntity getItemByPosition(int position) {
         return autoDeposits.get(position);
-    }
-
-    public static class AutoDepositViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
-        TextView textViewName;
-        TextView textViewAmount;
-        TextView textViewPeriod;
-        TextView textViewNextExecution;
-        SwitchCompat switchActive;
-        ImageView imageViewIcon;
-
-        public AutoDepositViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            cardView = itemView.findViewById(R.id.card_view_auto_deposit);
-            textViewName = itemView.findViewById(R.id.text_view_name);
-            textViewAmount = itemView.findViewById(R.id.text_view_amount);
-            textViewPeriod = itemView.findViewById(R.id.text_view_period);
-            textViewNextExecution = itemView.findViewById(R.id.text_view_next_execution);
-            switchActive = itemView.findViewById(R.id.switch_active);
-            imageViewIcon = itemView.findViewById(R.id.image_view_icon);
-        }
-
-        public void bind(AutoDepositEntity autoDeposit) {
-            textViewName.setText(autoDeposit.getName());
-
-            textViewAmount.setText(AmountUtils.formatAmount(autoDeposit.getAmount()));
-
-            textViewPeriod.setText(DateUtils.getPeriodString(autoDeposit.getPeriodType()));
-
-            if (autoDeposit.getNextExecutionDate() != null) {
-                textViewNextExecution.setText(DateUtils.formatDate(autoDeposit.getNextExecutionDate()));
-            } else {
-                textViewNextExecution.setText("Не запланировано");
-            }
-
-            switchActive.setChecked(autoDeposit.getIsActive());
-
-            imageViewIcon.setImageResource(R.drawable.ic_money);
-
-            if (autoDeposit.getIsActive()) {
-                cardView.setCardBackgroundColor(
-                        itemView.getContext().getResources().getColor(R.color.active, null)
-                );
-            } else {
-                cardView.setCardBackgroundColor(
-                        itemView.getContext().getResources().getColor(R.color.inactive, null)
-                );
-            }
-        }
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.repository.GoalRepository;
 import com.example.piggybankpro.data.repository.RepositoryFactory;
 import java.util.List;
@@ -17,8 +18,8 @@ import java.util.Stack;
 public class MainViewModel extends AndroidViewModel {
 
     private final GoalRepository goalRepository;
-    private final MutableLiveData<String> currentParentId = new MutableLiveData<>(null);
-    private final Stack<String> navigationStack = new Stack<>();
+    private final MutableLiveData<Id> currentParentId = new MutableLiveData<>(null);
+    private final Stack<Id> navigationStack = new Stack<>();
 
     private LiveData<List<GoalEntity>> currentGoals;
 
@@ -79,7 +80,7 @@ public class MainViewModel extends AndroidViewModel {
         return totalSavedAmount;
     }
 
-    public String getCurrentParentId() {
+    public Id getCurrentParentId() {
         return currentParentId.getValue();
     }
 
@@ -99,7 +100,7 @@ public class MainViewModel extends AndroidViewModel {
 
     public void dropInto(GoalEntity droppedGoal, GoalEntity targetGoal) {
         droppedGoal.setParentId(targetGoal.getId());
-        droppedGoal.setOrderPosition(0);
+        droppedGoal.setOrderPosition(-1);
         goalRepository.update(droppedGoal);
     }
 
@@ -108,7 +109,7 @@ public class MainViewModel extends AndroidViewModel {
             return;
         }
         goal.setParentId(navigationStack.peek());
-        goal.setOrderPosition(0);
+        goal.setOrderPosition(-1);
         goalRepository.update(goal);
     }
 
@@ -116,7 +117,7 @@ public class MainViewModel extends AndroidViewModel {
         goalRepository.delete(goal);
     }
 
-    public void setCurrentParentId(String parentId) {
+    public void setCurrentParentId(Id parentId) {
         navigationStack.clear();
         currentParentId.setValue(parentId);
     }
@@ -127,6 +128,7 @@ public class MainViewModel extends AndroidViewModel {
         }
 
         draggedGoal.setOrderPosition(newPosition);
+        goalRepository.update(draggedGoal);
     }
 
     public LiveData<List<GoalEntity>> getAllGoals() {

@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.piggybankpro.R;
+import com.example.piggybankpro.data.local.converters.IdConverter;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.local.entities.TransactionEntity;
 import com.example.piggybankpro.databinding.ActivityGoalDetailBinding;
 import com.example.piggybankpro.presentation.adapters.TransactionAdapter;
@@ -39,14 +41,14 @@ public class GoalDetailActivity extends AppCompatActivity implements
     private TransactionAdapter transactionAdapter;
     private ChangeAmountDialogs dialogs;
 
-    private String goalId;
+    private Id goalId;
     private GoalEntity currentGoal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        goalId = getIntent().getStringExtra("goal_id");
+        goalId = IdConverter.fromStrToId(getIntent().getStringExtra("goal_id"));
         if (goalId == null) {
             goalNotFound(this);
             finish();
@@ -209,8 +211,8 @@ public class GoalDetailActivity extends AppCompatActivity implements
 
     private void editGoal() {
         Intent intent = new Intent(this, CreateGoalActivity.class);
-        intent.putExtra("goal_id", goalId);
-        intent.putExtra("parent_id", currentGoal.getParentId());
+        intent.putExtra("goal_id", IdConverter.fromIdToStr(goalId));
+        intent.putExtra("parent_id", IdConverter.fromIdToStr(currentGoal.getParentId()));
         intent.putExtra("order_position", currentGoal.getOrderPosition());
         startActivity(intent);
     }

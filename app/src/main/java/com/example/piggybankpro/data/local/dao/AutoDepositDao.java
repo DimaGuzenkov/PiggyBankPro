@@ -14,6 +14,7 @@ import androidx.room.Update;
 
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 
 import java.util.List;
 
@@ -35,15 +36,15 @@ public interface AutoDepositDao {
     LiveData<List<AutoDepositEntity>> getAllAutoDeposits();
 
     @Query("SELECT * FROM auto_deposits WHERE id = :depositId")
-    AutoDepositEntity getAutoDepositByIdSync(String depositId);
+    AutoDepositEntity getAutoDepositByIdSync(Id depositId);
 
     @Query("SELECT * FROM auto_deposits WHERE id = :depositId")
-    LiveData<AutoDepositEntity> getAutoDepositById(String depositId);
+    LiveData<AutoDepositEntity> getAutoDepositById(Id depositId);
 
     @Query("SELECT * FROM auto_deposits WHERE is_active = 1 AND next_execution_date <= :currentTime")
     List<AutoDepositEntity> getDueAutoDepositsSync(long currentTime);
 
     // Обновление статусов
     @Query("UPDATE auto_deposits SET is_active = :isActive WHERE id = :depositId")
-    void setActive(String depositId, boolean isActive);
+    void setActive(Id depositId, boolean isActive);
 }

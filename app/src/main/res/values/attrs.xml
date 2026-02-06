@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RingProgressBar">
+        <attr name="backgroundColor" format="color" />
+        <attr name="progressColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="strokeWidth" format="dimension" />
+        <attr name="textSize" format="dimension" />
+        <attr name="showText" format="boolean" />
+        <attr name="halfCircle" format="boolean" />
+        <attr name="progress" format="float" />
+        <attr name="max" format="integer" />
+        <attr name="checkDrawable" format="reference" />
+    </declare-styleable>
+</resources>

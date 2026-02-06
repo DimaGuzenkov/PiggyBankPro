@@ -7,6 +7,9 @@ import androidx.room.Ignore;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.piggybankpro.data.local.converters.IdConverter;
 
 @Entity(
         tableName = "goal_deposit_cross_ref",
@@ -31,18 +34,19 @@ import androidx.room.PrimaryKey;
                 @Index(value = {"goal_id", "auto_deposit_id"}, unique = true)
         }
 )
+@TypeConverters(IdConverter.class)
 public class GoalDepositCrossRefEntity {
     @ColumnInfo(name = "goal_id")
     @NonNull
-    private String goalId;
+    private Id goalId = new Id();
 
     @ColumnInfo(name = "goal_title")
     @NonNull
-    private String goalTitle;
+    private String goalTitle = "";
 
     @ColumnInfo(name = "auto_deposit_id")
     @NonNull
-    private String autoDepositId;
+    private Id autoDepositId = new Id();
 
     @ColumnInfo(name = "amount")
     private Double amount;
@@ -54,24 +58,21 @@ public class GoalDepositCrossRefEntity {
     private Long updatedAt = System.currentTimeMillis();
 
     public GoalDepositCrossRefEntity() {
-        goalId = "";
-        goalTitle = "";
-        autoDepositId = "";
     }
 
     @Ignore
-    public GoalDepositCrossRefEntity(@NonNull String goalId, @NonNull String goalTitle, @NonNull String autoDepositId) {
+    public GoalDepositCrossRefEntity(@NonNull Id goalId, @NonNull String goalTitle, @NonNull Id autoDepositId) {
         this.goalId = goalId;
         this.goalTitle = goalTitle;
         this.autoDepositId = autoDepositId;
     }
 
     @NonNull
-    public String getGoalId() {
+    public Id getGoalId() {
         return goalId;
     }
 
-    public void setGoalId(String goalId) {
+    public void setGoalId(Id goalId) {
         this.goalId = goalId;
         this.updatedAt = System.currentTimeMillis();
     }
@@ -86,11 +87,11 @@ public class GoalDepositCrossRefEntity {
     }
 
     @NonNull
-    public String getAutoDepositId() {
+    public Id getAutoDepositId() {
         return autoDepositId;
     }
 
-    public void setAutoDepositId(String autoDepositId) {
+    public void setAutoDepositId(Id autoDepositId) {
         this.autoDepositId = autoDepositId;
         this.updatedAt = System.currentTimeMillis();
     }

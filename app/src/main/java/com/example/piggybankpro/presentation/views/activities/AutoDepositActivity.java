@@ -1,6 +1,5 @@
 package com.example.piggybankpro.presentation.views.activities;
 
-import static com.example.piggybankpro.presentation.utils.AmountUtils.amountFromString;
 import static com.example.piggybankpro.presentation.utils.ToastUtils.*;
 
 import android.content.Intent;
@@ -8,39 +7,23 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piggybankpro.R;
+import com.example.piggybankpro.data.local.converters.IdConverter;
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
-import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
-import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.databinding.ActivityAutoDepositBinding;
-import com.example.piggybankpro.databinding.ActivityCreateAutoDepositBinding;
 import com.example.piggybankpro.presentation.adapters.AutoDepositAdapter;
-import com.example.piggybankpro.presentation.utils.AmountTextWatcher;
-import com.example.piggybankpro.presentation.utils.AmountUtils;
-import com.example.piggybankpro.presentation.utils.DateUtils;
 import com.example.piggybankpro.presentation.utils.SwipeItemTouchHelperCallback;
-import com.example.piggybankpro.presentation.utils.ToastUtils;
 import com.example.piggybankpro.presentation.viewmodels.AutoDepositViewModel;
-import com.example.piggybankpro.presentation.viewmodels.GoalViewModel;
-import com.example.piggybankpro.presentation.views.dialogs.GoalSelectionDialogFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class AutoDepositActivity extends AppCompatActivity implements
@@ -136,9 +119,9 @@ public class AutoDepositActivity extends AppCompatActivity implements
         show(autoDeposit.getId());
     }
 
-    private void show(String id) {
+    private void show(Id id) {
         Intent intent = new Intent(this, CreateAutoDepositActivity.class);
-        intent.putExtra("auto_deposit_id", id);
+        intent.putExtra("auto_deposit_id", IdConverter.fromIdToStr(id));
         startActivity(intent);
     }
 

@@ -6,12 +6,12 @@ import com.example.piggybankpro.data.local.entities.Id;
 
 public class IdConverter {
     @TypeConverter
-    public String fromIdToStr(Id id) {
-        return id == null ? null : id.toString();
+    public static String fromIdToStr(Id id) {
+        return id == null ? null : id.id();
     }
 
     @TypeConverter
-    public Id fromStrToId(String id) {
-        return id == null ? new Id() : new Id(id);
+    public static Id fromStrToId(String id) {
+        return id == null ? null : new Id(id);
     }
 }

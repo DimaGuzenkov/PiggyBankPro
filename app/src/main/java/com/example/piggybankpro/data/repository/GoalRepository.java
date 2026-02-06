@@ -10,6 +10,7 @@ import com.example.piggybankpro.data.local.database.DatabaseClient;
 import com.example.piggybankpro.data.local.dao.GoalDao;
 import com.example.piggybankpro.data.local.dao.TransactionDao;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.local.entities.TransactionEntity;
 
 import java.util.List;
@@ -35,11 +36,11 @@ public class GoalRepository {
         return allGoals;
     }
 
-    public LiveData<GoalEntity> getGoalById(String goalId) {
+    public LiveData<GoalEntity> getGoalById(Id goalId) {
         return goalDao.getGoalById(goalId);
     }
 
-    public GoalEntity getGoalByIdSync(String goalId) {
+    public GoalEntity getGoalByIdSync(Id goalId) {
         return goalDao.getGoalByIdSync(goalId);
     }
 
@@ -66,7 +67,7 @@ public class GoalRepository {
         executor.execute(() -> goalDao.deleteWithParentUpdate(goal));
     }
 
-    public void deposit(String goalId, Double amount, String description) {
+    public void deposit(Id goalId, Double amount, String description) {
         executor.execute(() -> {
             GoalEntity goal = goalDao.getGoalByIdSync(goalId);
 
@@ -87,7 +88,7 @@ public class GoalRepository {
         });
     }
 
-    public void withdraw(String goalId, Double amount, String description) {
+    public void withdraw(Id goalId, Double amount, String description) {
         executor.execute(() -> {
             try {
                 GoalEntity goal = goalDao.getGoalByIdSync(goalId);
@@ -115,7 +116,7 @@ public class GoalRepository {
         });
     }
 
-    public void transfer(String sourceGoalId, String destGoalId, double amount, String description) {
+    public void transfer(Id sourceGoalId, Id destGoalId, double amount, String description) {
         executor.execute(() -> {
             try {
                 GoalEntity sourceGoal = goalDao.getGoalByIdSync(sourceGoalId);
@@ -165,14 +166,14 @@ public class GoalRepository {
         }
     }
 
-    public LiveData<List<GoalEntity>> getSubGoals(String parentId) {
+    public LiveData<List<GoalEntity>> getSubGoals(Id parentId) {
         if (parentId == null) {
             return goalDao.getRootGoals();
         }
         return goalDao.getSubGoals(parentId);
     }
 
-    public LiveData<Double> getTotalSavedAmount(String parentId) {
+    public LiveData<Double> getTotalSavedAmount(Id parentId) {
         if (parentId == null) {
             return goalDao.getRootTotalSavedAmount();
         }

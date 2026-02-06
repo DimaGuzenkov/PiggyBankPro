@@ -11,6 +11,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.example.piggybankpro.data.local.converters.DateConverter;
+import com.example.piggybankpro.data.local.converters.IdConverter;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -23,12 +24,12 @@ import java.util.UUID;
                 @Index(value = {"next_execution_date"})
         }
 )
-@TypeConverters(DateConverter.class)
+@TypeConverters({DateConverter.class, IdConverter.class})
 public class AutoDepositEntity {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
-    private String id = UUID.randomUUID().toString();
+    private Id id = new Id();
 
     @ColumnInfo(name = "name")
     private String name;
@@ -69,11 +70,11 @@ public class AutoDepositEntity {
     }
 
     @NonNull
-    public String getId() {
+    public Id getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(@NonNull Id id) {
         this.id = id;
     }
 

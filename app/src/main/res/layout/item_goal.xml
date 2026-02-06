@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view_goal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
     android:layout_marginHorizontal="8dp"
     android:background="@color/background"
     app:cardCornerRadius="8dp"
@@ -13,39 +13,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:orientation="horizontal">
 
-        <!-- Заголовок и иконка -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/image_view_drag"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="12dp"
-                android:src="@drawable/ic_drag_handle"
-                android:contentDescription="Перетащить"
-                android:tint="#666666" />
-
-            <ImageView
-                android:id="@+id/image_view_icon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="12dp"
-                android:src="@drawable/ic_goal" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:padding="4dp">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="8dp">
 
                 <TextView
                     android:id="@+id/text_view_title"
@@ -53,94 +36,92 @@
                     android:layout_height="wrap_content"
                     android:text="Название цели"
                     android:textColor="#333333"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
 
-                <TextView
-                    android:id="@+id/text_view_current_amount"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="5000.00 ₽"
-                    android:textColor="#4CAF50"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/text_view_total_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5000.00 ₽"
+                        android:textColor="#666666"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_view_own_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="15000 ₽"
+                        android:textColor="#4CAF50"
+                        android:textSize="14sp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/image_view_completed"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_check"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/image_view_details"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Детали цели"
-                android:src="@drawable/ic_money" />
-
-        </LinearLayout>
-
-        <!-- Прогресс -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginHorizontal="6dp">
+
+                <com.example.piggybankpro.presentation.views.costomViews.RingProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="55dp"
+                    android:layout_height="40dp"
+                    app:backgroundColor="#E0E0E0"
+                    app:checkDrawable="@drawable/ic_check"
+                    app:halfCircle="true"
+                    app:progressColor="#2196F3"
+                    app:strokeWidth="5dp"
+                    app:textColor="#000000"
+                    app:textSize="10sp" />
 
                 <TextView
-                    android:id="@+id/text_view_target_amount"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="10000.00 ₽"
-                    android:textColor="#666666"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/text_view_progress_percentage"
+                    android:id="@+id/text_view_days_left"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50%"
-                    android:textColor="#2196F3"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="2dp"
+                    android:text="30 дн."
+                    android:textColor="#FF9800"
+                    android:textSize="10sp"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_marginTop="4dp"
-                android:background="#E0E0E0"
-                android:progress="50"
-                android:progressTint="#4CAF50" />
-
         </LinearLayout>
 
-        <!-- Дни до цели -->
-        <TextView
-            android:id="@+id/text_view_days_left"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="30 дней"
-            android:textColor="#FF9800"
-            android:textSize="12sp"
-            android:textStyle="italic" />
+        <LinearLayout
+            android:id="@+id/view_details"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:background="#F4E7D3"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_settings_gear"
+                android:contentDescription="Настройки цели"
+                app:tint="#8B4513" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.repository.AutoDepositRepository;
 import com.example.piggybankpro.data.repository.RepositoryFactory;
 
@@ -31,7 +32,7 @@ public class AutoDepositViewModel extends AndroidViewModel {
         return allAutoDeposits;
     }
 
-    public LiveData<AutoDepositEntity> getAutoDepositById(String id) {
+    public LiveData<AutoDepositEntity> getAutoDepositById(Id id) {
         return autoDepositRepository.getAutoDepositById(id);
     }
 
@@ -76,12 +77,12 @@ public class AutoDepositViewModel extends AndroidViewModel {
     }
 
     // Управление связями с целями
-    public LiveData<List<GoalDepositCrossRefEntity>> getCrossRefsByDepositId(String depositId) {
+    public LiveData<List<GoalDepositCrossRefEntity>> getCrossRefsByDepositId(Id depositId) {
         return autoDepositRepository.getCrossRefsByDepositId(depositId);
     }
 
     // Выполнение автопополнения
-    public void executeAutoDeposit(String depositId) {
+    public void executeAutoDeposit(Id depositId) {
         try {
             autoDepositRepository.executeAutoDeposit(depositId);
             errorMessage.setValue(null);
@@ -100,7 +101,7 @@ public class AutoDepositViewModel extends AndroidViewModel {
     }
 
     // Управление статусом
-    public void toggleAutoDepositStatus(String depositId, boolean isActive) {
+    public void toggleAutoDepositStatus(Id depositId, boolean isActive) {
         try {
             autoDepositRepository.setActive(depositId, isActive);
             errorMessage.setValue(null);

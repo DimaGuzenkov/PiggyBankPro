@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.piggybankpro.R;
+import com.example.piggybankpro.presentation.views.costomViews.RingProgressBar;
 
 import java.util.Locale;
 

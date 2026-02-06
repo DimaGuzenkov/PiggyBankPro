@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.example.piggybankpro.data.local.database.AppDatabase;
 import com.example.piggybankpro.data.local.database.DatabaseClient;
 import com.example.piggybankpro.data.local.dao.TransactionDao;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.local.entities.TransactionEntity;
 
 import java.util.Date;
@@ -38,7 +39,7 @@ public class TransactionRepository {
     }
 
     // Фильтрация
-    public LiveData<List<TransactionEntity>> getTransactionsByGoalId(String goalId) {
+    public LiveData<List<TransactionEntity>> getTransactionsByGoalId(Id goalId) {
         return transactionDao.getTransactionsByGoalId(goalId);
     }
 }

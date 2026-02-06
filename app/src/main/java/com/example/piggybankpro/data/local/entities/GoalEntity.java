@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.example.piggybankpro.data.local.converters.DateConverter;
+import com.example.piggybankpro.data.local.converters.IdConverter;
 
 import java.util.Date;
 import java.util.UUID;
@@ -28,13 +29,12 @@ import java.util.UUID;
                 @Index(value = {"target_date"})
         }
 )
-@TypeConverters(DateConverter.class)
+@TypeConverters({DateConverter.class, IdConverter.class})
 public class GoalEntity {
-
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
-    private String id = UUID.randomUUID().toString();
+    private Id id = new Id();
 
     @ColumnInfo(name = "title", defaultValue = "Новая цель")
     @NonNull
@@ -73,7 +73,7 @@ public class GoalEntity {
     private String goalUrl;
 
     @ColumnInfo(name = "parent_id")
-    private String parentId;
+    private Id parentId;
 
     @ColumnInfo(name = "order_position", defaultValue = "0")
     @NonNull
@@ -84,17 +84,6 @@ public class GoalEntity {
 
     @ColumnInfo(name = "completed_date")
     private Date completedDate;
-
-//    public Date getCompletedDate2() {
-//        return completedDate2;
-//    }
-//
-//    public void setCompletedDate2(Date completedDate2) {
-//        this.completedDate2 = completedDate2;
-//    }
-//
-//    @ColumnInfo(name = "completed_date2")
-//    private Date completedDate2;
 
     public GoalEntity() {
     }
@@ -116,11 +105,11 @@ public class GoalEntity {
     }
 
     @NonNull
-    public String getId() {
+    public Id getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(@NonNull Id id) {
         this.id = id;
     }
 
@@ -232,24 +221,25 @@ public class GoalEntity {
     }
 
 //    @NonNull
-    public String getParentId() {
+    public Id getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Id parentId) {
         this.parentId = parentId;
         this.updatedAt = new Date();
     }
 
+    @NonNull
     public Integer getOrderPosition() {
         return orderPosition;
     }
 
-    public void setOrderPosition(Integer orderPosition) {
+    public void setOrderPosition(int orderPosition) {
 //        if (orderPosition < 0) {
 //            throw new IllegalArgumentException("Order position should be grater or equals zero");
 //        }
-        this.orderPosition = Math.max(orderPosition, 0);
+        this.orderPosition = orderPosition;
         this.updatedAt = new Date();
     }
 

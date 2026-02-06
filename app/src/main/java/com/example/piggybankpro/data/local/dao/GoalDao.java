@@ -13,6 +13,7 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 
 import java.util.List;
 
@@ -46,14 +47,14 @@ public interface GoalDao {
         updatePositions(goal.getParentId());
     }
 
-    default void updateCalculatedAmountForAncestors(String id) {
+    default void updateCalculatedAmountForAncestors(Id id) {
         while (id != null) {
             updateCalculatedAmountForAncestor(id);
             id = getGoalByIdSync(id).getParentId();
         }
     }
 
-    default void updatePositions(String parentId) {
+    default void updatePositions(Id parentId) {
         var goals = parentId == null ? getRootGoalsSync() : getSubGoalsSync(parentId);
         for (int i = 0; i < goals.size(); ++i) {
             var goal = goals.get(i);
@@ -65,14 +66,11 @@ public interface GoalDao {
 
     }
 
-    /**
-     * Обновляет цель и автоматически обновляет кэшированные суммы
-     */
     @Transaction
     default void updateWithParentUpdate(GoalEntity goal) {
         GoalEntity oldGoal = getGoalByIdSync(goal.getId());
-        String oldParentId = oldGoal.getParentId();
-        String newParentId = goal.getParentId();
+        var oldParentId = oldGoal.getParentId();
+        var newParentId = goal.getParentId();
         double oldCurrentAmount = oldGoal.getCurrentAmount();
         boolean needToUpdate = oldCurrentAmount != goal.getCurrentAmount();
 
@@ -96,7 +94,7 @@ public interface GoalDao {
      */
     @Transaction
     default void deleteWithParentUpdate(GoalEntity goal) {
-        String parentId = goal.getParentId();
+        var parentId = goal.getParentId();
 
         delete(goal);
 
@@ -117,38 +115,38 @@ public interface GoalDao {
             "    COALESCE(current_amount, 0) + " +
             "    COALESCE((SELECT SUM(calculated_amount) FROM goals AS children WHERE children.parent_id = goals.id), 0) " +
             "WHERE id = :goalId")
-    void updateCalculatedAmountForGoal(String goalId);
+    void updateCalculatedAmountForGoal(Id goalId);
 
     @Query("UPDATE goals " +
             "SET calculated_amount = " +
             "    COALESCE(current_amount, 0) + " +
             "    COALESCE((SELECT SUM(calculated_amount) FROM goals AS children WHERE children.parent_id = goals.id), 0) " +
             "WHERE id = :goalId")
-    void updateCalculatedAmountForAncestor(String goalId);
+    void updateCalculatedAmountForAncestor(Id goalId);
 
     @Query("SELECT * FROM goals ORDER BY created_at DESC")
     LiveData<List<GoalEntity>> getAllGoals();
 
     @Query("SELECT * FROM goals WHERE id = :goalId")
-    LiveData<GoalEntity> getGoalById(String goalId);
+    LiveData<GoalEntity> getGoalById(Id goalId);
 
     @Query("SELECT * FROM goals WHERE id = :goalId")
-    GoalEntity getGoalByIdSync(String goalId);
+    GoalEntity getGoalByIdSync(Id goalId);
 
     @Query("SELECT * FROM goals WHERE parent_id IS NULL ORDER BY order_position, created_at DESC")
     LiveData<List<GoalEntity>> getRootGoals();
 
     @Query("SELECT * FROM goals WHERE parent_id = :parentId ORDER BY order_position, created_at DESC")
-    LiveData<List<GoalEntity>> getSubGoals(String parentId);
+    LiveData<List<GoalEntity>> getSubGoals(Id parentId);
 
     @Query("SELECT * FROM goals WHERE parent_id IS NULL ORDER BY order_position, created_at DESC")
     List<GoalEntity> getRootGoalsSync();
 
     @Query("SELECT * FROM goals WHERE parent_id = :parentId ORDER BY order_position, created_at DESC")
-    List<GoalEntity> getSubGoalsSync(String parentId);
+    List<GoalEntity> getSubGoalsSync(Id parentId);
 
     @Query("SELECT SUM(calculated_amount) FROM goals WHERE parent_id = :parentId")
-    LiveData<Double> getTotalSavedAmount(String parentId);
+    LiveData<Double> getTotalSavedAmount(Id parentId);
 
     @Query("SELECT SUM(calculated_amount) FROM goals WHERE parent_id IS NULL")
     LiveData<Double> getRootTotalSavedAmount();

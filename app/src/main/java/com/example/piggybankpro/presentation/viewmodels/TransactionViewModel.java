@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.local.entities.TransactionEntity;
 import com.example.piggybankpro.data.repository.TransactionRepository;
 import com.example.piggybankpro.data.repository.RepositoryFactory;
@@ -24,7 +25,7 @@ public class TransactionViewModel extends AndroidViewModel {
         transactionRepository = RepositoryFactory.getInstance(application).getTransactionRepository();
     }
 
-    public LiveData<List<TransactionEntity>> getTransactionsByGoalId(String goalId) {
+    public LiveData<List<TransactionEntity>> getTransactionsByGoalId(Id goalId) {
         return transactionRepository.getTransactionsByGoalId(goalId);
     }
 

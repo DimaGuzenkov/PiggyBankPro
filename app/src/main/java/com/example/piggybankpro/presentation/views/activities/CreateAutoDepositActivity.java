@@ -25,8 +25,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piggybankpro.R;
+import com.example.piggybankpro.data.local.converters.IdConverter;
 import com.example.piggybankpro.data.local.entities.AutoDepositEntity;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.databinding.ActivityCreateAutoDepositBinding;
 import com.example.piggybankpro.databinding.ActivityMainBinding;
 import com.example.piggybankpro.presentation.adapters.CrossRefsAdapter;
@@ -48,7 +50,7 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
     private AutoDepositViewModel autoDepositViewModel;
     private CrossRefsAdapter crossRefsAdapter;
 
-    private String editingDepositId;
+    private Id editingDepositId;
     private double amount;
 
     @Override
@@ -63,7 +65,7 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
 
         autoDepositViewModel = new ViewModelProvider(this).get(AutoDepositViewModel.class);
 
-        editingDepositId = getIntent().getStringExtra("auto_deposit_id");
+        editingDepositId = IdConverter.fromStrToId(getIntent().getStringExtra("auto_deposit_id"));
 
         setupRecyclerView();
         setupPeriodAdapter();
@@ -190,7 +192,7 @@ public class CreateAutoDepositActivity extends AppCompatActivity {
 
         AutoDepositEntity autoDeposit = new AutoDepositEntity();
 
-        autoDeposit.setId(Objects.requireNonNullElseGet(editingDepositId, () -> UUID.randomUUID().toString()));
+        autoDeposit.setId(Id.createIfNull(editingDepositId));
         autoDeposit.setName(name);
         autoDeposit.setAmount(amount);
         autoDeposit.setPeriodType(DateUtils.getPeriodTypeFromPosition(binding.spinnerFrequency.getSelectedItemPosition()));

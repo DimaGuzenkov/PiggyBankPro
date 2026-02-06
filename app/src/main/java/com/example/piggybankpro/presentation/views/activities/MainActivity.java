@@ -15,8 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.room.TypeConverters;
 
 import com.example.piggybankpro.R;
+import com.example.piggybankpro.data.local.converters.IdConverter;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
 import com.example.piggybankpro.databinding.ActivityMainBinding;
 import com.example.piggybankpro.presentation.adapters.GoalAdapter;
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onGoalLongClick(GoalEntity goal, View view) {
         goalAdapter.setDraggedGoal(goal);
 
-        ClipData data = ClipData.newPlainText("goal_id", goal.getId());
+        ClipData data = ClipData.newPlainText("goal_id", IdConverter.fromIdToStr(goal.getId()));
 
         View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
 
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onGoalDetailsClick(GoalEntity goal) {
         Intent intent = new Intent(this, GoalDetailActivity.class);
-        intent.putExtra("goal_id", goal.getId());
+        intent.putExtra("goal_id", IdConverter.fromIdToStr(goal.getId()));
         startActivity(intent);
     }
 
@@ -192,11 +194,13 @@ public class MainActivity extends AppCompatActivity implements
         );
     }
 
+    // todo не работает перемещение между целлями
+
     private void setupFloatingActionButton() {
         binding.fabAddGoal.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CreateGoalActivity.class);
-            String currentParentId = mainViewModel.getCurrentParentId();
-            intent.putExtra("parent_id", currentParentId);
+            var currentParentId = mainViewModel.getCurrentParentId();
+            intent.putExtra("parent_id", IdConverter.fromIdToStr(currentParentId));
             intent.putExtra("order_position", goalAdapter.getGoalCount());
             startActivity(intent);
         });

@@ -1,27 +1,20 @@
 package com.example.piggybankpro.presentation.adapters;
 
 import android.content.ClipDescription;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
-import com.example.piggybankpro.presentation.utils.ViewUtils;
-
-import static com.example.piggybankpro.presentation.utils.AmountUtils.formatAmount;
-import static com.example.piggybankpro.presentation.utils.DateUtils.formatDays;
-
-import static java.lang.Math.abs;
+import com.example.piggybankpro.databinding.ItemDividerBinding;
+import com.example.piggybankpro.databinding.ItemGoalBinding;
+import com.example.piggybankpro.presentation.adapters.holders.DividerViewHolder;
+import com.example.piggybankpro.presentation.adapters.holders.GoalViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,11 +83,11 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         if (viewType == TYPE_GOAL) {
-            View view = inflater.inflate(R.layout.item_goal, parent, false);
-            return new GoalViewHolder(view);
+            var binding = ItemGoalBinding.inflate(inflater, parent, false);
+            return new GoalViewHolder(binding);
         } else {
-            View view = inflater.inflate(R.layout.item_divider, parent, false);
-            return new DividerViewHolder(view);
+            var binding = ItemDividerBinding.inflate(inflater, parent, false);
+            return new DividerViewHolder(binding);
         }
     }
 
@@ -121,13 +114,14 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private void setupGoalView(GoalViewHolder holder, int position) {
         var goal = getGoalByPosition(position);
-        holder.cardView.setOnClickListener(v -> {
+        var binding = holder.getBinding();
+        binding.cardViewGoal.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onGoalClick(goal);
             }
         });
 
-        holder.cardView.setOnLongClickListener(v -> {
+        binding.cardViewGoal.setOnLongClickListener(v -> {
             if (listener != null) {
                 listener.onGoalLongClick(goal, v);
                 return true;
@@ -135,13 +129,13 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return false;
         });
 
-        holder.imageViewDetails.setOnClickListener(v -> {
+        binding.viewDetails.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onGoalDetailsClick(goal);
             }
         });
 
-        holder.cardView.setOnDragListener((v, event) -> {
+        binding.cardViewGoal.setOnDragListener((v, event) -> {
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
                     ClipDescription clipDescription = event.getClipDescription();
@@ -217,112 +211,6 @@ public class GoalAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             return false;
         });
-    }
-
-     static class GoalViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
-        TextView textViewTitle;
-        TextView textViewTargetAmount;
-        TextView textViewCurrentAmount;
-        TextView textViewProgressPercentage;
-        TextView textViewDaysLeft;
-        ProgressBar progressBar;
-        ImageView imageViewIcon;
-        ImageView imageViewCompleted;
-        ImageView imageViewDetails;
-
-        public GoalViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            cardView = itemView.findViewById(R.id.card_view_goal);
-            textViewTitle = itemView.findViewById(R.id.text_view_title);
-            textViewTargetAmount = itemView.findViewById(R.id.text_view_target_amount);
-            textViewCurrentAmount = itemView.findViewById(R.id.text_view_current_amount);
-            textViewProgressPercentage = itemView.findViewById(R.id.text_view_progress_percentage);
-            textViewDaysLeft = itemView.findViewById(R.id.text_view_days_left);
-            progressBar = itemView.findViewById(R.id.progress_bar);
-            imageViewIcon = itemView.findViewById(R.id.image_view_icon);
-            imageViewCompleted = itemView.findViewById(R.id.image_view_completed);
-            imageViewDetails = itemView.findViewById(R.id.image_view_details);
-        }
-
-        public void bind(GoalEntity goal) {
-            textViewTitle.setText(goal.getTitle());
-
-            if (goal.getTargetAmount() != null) {
-                textViewTargetAmount.setText(formatAmount(goal.getTargetAmount()));
-                textViewTargetAmount.setVisibility(View.VISIBLE);
-            } else {
-                textViewTargetAmount.setVisibility(View.GONE);
-            }
-
-            textViewCurrentAmount.setText(formatAmount(goal.getCalculatedAmount()));
-
-            Double progress = goal.getProgressPercentage();
-            if (progress != null) {
-                ViewUtils.updateGoalProgress(progressBar, textViewProgressPercentage, progress);
-            } else {
-                textViewProgressPercentage.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-            }
-
-            Long daysLeft = goal.getDaysRemaining();
-            if (daysLeft != null) {
-                textViewDaysLeft.setText(formatDays(daysLeft));
-                textViewDaysLeft.setVisibility(View.VISIBLE);
-            } else {
-                textViewDaysLeft.setVisibility(View.GONE);
-            }
-
-            if (goal.getColor() != null) {
-                imageViewIcon.setColorFilter(goal.getColor());
-            }
-
-            if (goal.getIsCompleted() != null && goal.getIsCompleted()) {
-                imageViewCompleted.setVisibility(View.VISIBLE);
-                cardView.setAlpha(0.8f);
-            } else {
-                imageViewCompleted.setVisibility(View.GONE);
-                cardView.setAlpha(1.0f);
-            }
-
-            imageViewIcon.setImageResource(R.drawable.ic_goal);
-        }
-
-        public void setHighlighted(boolean highlighted) {
-            if (highlighted) {
-                cardView.setCardBackgroundColor(
-                        itemView.getContext().getResources().getColor(R.color.highlight_color, null)
-                );
-                cardView.setCardElevation(8f);
-            } else {
-                cardView.setCardBackgroundColor(
-                        itemView.getContext().getResources().getColor(R.color.surface, null)
-                );
-                cardView.setCardElevation(2f);
-            }
-        }
-    }
-
-    static class DividerViewHolder extends RecyclerView.ViewHolder {
-        View dividerView;
-
-        public DividerViewHolder(@NonNull View itemView) {
-            super(itemView);
-            dividerView = itemView.findViewById(R.id.divider_view);
-        }
-
-        public void setHighlighted(boolean highlighted) {
-            if (highlighted) {
-                dividerView.setBackgroundColor(
-                        itemView.getContext().getResources().getColor(R.color.highlight_color, null)
-                );
-            } else {
-                dividerView.setBackgroundColor(
-                        itemView.getContext().getResources().getColor(R.color.background, null)
-                );
-            }
-        }
     }
 
     private static class DividerPlaceholder {

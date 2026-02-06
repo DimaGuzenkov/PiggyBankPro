@@ -1,26 +1,21 @@
 package com.example.piggybankpro.presentation.adapters;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.GoalDepositCrossRefEntity;
-import com.example.piggybankpro.presentation.utils.AmountTextWatcher;
-import com.example.piggybankpro.presentation.utils.AmountUtils;
+import com.example.piggybankpro.databinding.ItemCrossRefBinding;
+import com.example.piggybankpro.presentation.adapters.holders.CrossRefsViewHolder;
 import com.example.piggybankpro.presentation.utils.SwipeItemTouchHelperCallback;
 
 import java.util.List;
 
-public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.CrossRefsViewHolder> implements SwipeItemTouchHelperCallback.OnSwipeListener {
+public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsViewHolder> implements
+        SwipeItemTouchHelperCallback.OnSwipeListener,
+        CrossRefsViewHolder.OnChangeListener {
     private List<GoalDepositCrossRefEntity> crossRefs;
     private final OnCrossRefsChangeListener listener;
 
@@ -37,9 +32,9 @@ public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.Cros
     @NonNull
     @Override
     public CrossRefsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_cross_ref, parent, false);
-        return new CrossRefsViewHolder(view);
+        var inflater = LayoutInflater.from(parent.getContext());
+        var binding = ItemCrossRefBinding.inflate(inflater, parent, false);
+        return new CrossRefsViewHolder(binding, this);
     }
 
     @Override
@@ -94,46 +89,9 @@ public class CrossRefsAdapter extends RecyclerView.Adapter<CrossRefsAdapter.Cros
         }
     }
 
-    public class CrossRefsViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textViewTitle;
-        private final EditText editTextAmount;
-
-        public CrossRefsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textViewTitle = itemView.findViewById(R.id.text_view_title);
-            editTextAmount = itemView.findViewById(R.id.edit_text_amount);
-
-            editTextAmount.addTextChangedListener(new AmountTextWatcher(editTextAmount));
-            editTextAmount.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    var amount = AmountUtils.amountFromString(editable.toString()).result();
-                    if (amount == null) {
-                        amount = 0.0;
-                    }
-
-                    int position = getAbsoluteAdapterPosition();
-                    crossRefs.get(position).setAmount(amount);
-
-                    if (!listener.onChange()) {
-                        editTextAmount.setError("Недостаточно средств");
-                        editTextAmount.requestFocus();
-                    }
-                }
-            });
-        }
-
-        public void bind(GoalDepositCrossRefEntity crossRef) {
-            textViewTitle.setText(crossRef.getGoalTitle());
-            if (crossRef.getAmount() != null) {
-                editTextAmount.setText(AmountUtils.formatAmount(crossRef.getAmount()));
-            }
-        }
+    @Override
+    public boolean changeAmount(double amount, int position) {
+        crossRefs.get(position).setAmount(amount);
+        return listener.onChange();
     }
 }

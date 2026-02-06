@@ -10,7 +10,9 @@ import android.widget.DatePicker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.piggybankpro.data.local.converters.IdConverter;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.databinding.ActivityCreateGoalBinding;
 import com.example.piggybankpro.presentation.utils.AmountTextWatcher;
 import com.example.piggybankpro.presentation.viewmodels.GoalViewModel;
@@ -34,9 +36,9 @@ public class CreateGoalActivity extends AppCompatActivity {
     private GoalViewModel goalViewModel;
     private Date targetDate;
     private int selectedColor = Color.parseColor("#4CAF50");
-    private String editingGoalId = null;
+    private Id editingGoalId = null;
 
-    private String parentId;
+    private Id parentId;
     private Integer orderPosition;
 
     @Override
@@ -52,8 +54,8 @@ public class CreateGoalActivity extends AppCompatActivity {
 
         goalViewModel = new androidx.lifecycle.ViewModelProvider(this).get(GoalViewModel.class);
 
-        editingGoalId = getIntent().getStringExtra("goal_id");
-        parentId = getIntent().getStringExtra("parent_id");
+        editingGoalId = IdConverter.fromStrToId(getIntent().getStringExtra("goal_id"));
+        parentId = IdConverter.fromStrToId(getIntent().getStringExtra("parent_id"));
         orderPosition = getIntent().getIntExtra("order_position", 0);
 
         updateDateButtonText();
@@ -146,7 +148,7 @@ public class CreateGoalActivity extends AppCompatActivity {
 
         GoalEntity goal = new GoalEntity();
 
-        goal.setId(Objects.requireNonNullElseGet(editingGoalId, () -> UUID.randomUUID().toString()));
+        goal.setId(Id.createIfNull(editingGoalId));
 
         goal.setTitle(binding.editTextTitle.getText().toString().trim());
         goal.setDescription(binding.editTextDescription.getText().toString().trim());

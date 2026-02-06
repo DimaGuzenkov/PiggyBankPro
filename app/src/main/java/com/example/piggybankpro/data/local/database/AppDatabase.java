@@ -1,5 +1,6 @@
 package com.example.piggybankpro.data.local.database;
 
+import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
@@ -22,11 +23,11 @@ import com.example.piggybankpro.data.local.entities.TransactionEntity;
                 GoalDepositCrossRefEntity.class,
                 TransactionEntity.class
         },
-        version = 6,
-        exportSchema = true
-//        autoMigrations = {
-//                @AutoMigration(from = 2, to = 3)
-//        }
+        version = 7,
+        exportSchema = true,
+        autoMigrations = {
+                @AutoMigration(from = 6, to = 7)
+        }
 )
 @TypeConverters({DateConverter.class, IdConverter.class})
 public abstract class AppDatabase extends RoomDatabase {

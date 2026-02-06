@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.presentation.utils.AmountTextWatcher;
 import com.example.piggybankpro.presentation.utils.AmountUtils;
 import com.example.piggybankpro.presentation.utils.ToastUtils;
@@ -64,7 +65,7 @@ public class ChangeAmountDialogs {
         return builder;
     }
 
-    public void showDepositDialog(String goalId) {
+    public void showDepositDialog(Id goalId) {
         var builder = initUi("Пополнение цели");
         buttonGoalPicker.setVisibility(View.GONE);
         builder.setPositiveButton("Пополнить", (dialog, which) ->
@@ -73,7 +74,7 @@ public class ChangeAmountDialogs {
         builder.show();
     }
 
-    private void depositDialog(String goalId) {
+    private void depositDialog(Id goalId) {
         String description = editTextDescription.getText().toString().trim();
 
         var amount = AmountUtils.amountFromString(editTextAmount.getText().toString()).result();
@@ -92,7 +93,7 @@ public class ChangeAmountDialogs {
         }
     }
 
-    public void showWithdrawDialog(String goalId, double goalAmount) {
+    public void showWithdrawDialog(Id goalId, double goalAmount) {
         var builder = initUi("Списание с цели");
         buttonGoalPicker.setVisibility(View.GONE);
         builder.setPositiveButton("Списать", (dialog, which) ->
@@ -100,7 +101,7 @@ public class ChangeAmountDialogs {
         builder.show();
     }
 
-    private void withdrawDialog(String goalId, double goalAmount) {
+    private void withdrawDialog(Id goalId, double goalAmount) {
         String description = editTextDescription.getText().toString().trim();
 
         var amount = AmountUtils.amountFromString(editTextAmount.getText().toString()).result();
@@ -125,7 +126,7 @@ public class ChangeAmountDialogs {
         }
     }
 
-    public void showTransferDialog(String sourceGoalId, double amount) {
+    public void showTransferDialog(Id sourceGoalId, double amount) {
         var builder = initUi("Перевод средств");
         buttonGoalPicker.setVisibility(View.VISIBLE);
 
@@ -135,7 +136,7 @@ public class ChangeAmountDialogs {
         builder.show();
     }
 
-    private void transferDialog(String sourceGoalId, double sourceAmount) {
+    private void transferDialog(Id sourceGoalId, double sourceAmount) {
         if (destGoal == null) {
             buttonGoalPicker.setError("Выберите цель для перевода");
             buttonGoalPicker.requestFocus();

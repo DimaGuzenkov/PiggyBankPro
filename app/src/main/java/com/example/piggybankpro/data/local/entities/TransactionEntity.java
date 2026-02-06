@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.example.piggybankpro.data.local.converters.DateConverter;
+import com.example.piggybankpro.data.local.converters.IdConverter;
 
 import java.util.Date;
 import java.util.UUID;
@@ -37,7 +38,7 @@ import java.util.UUID;
                 @Index(value = {"transaction_type"}),
         }
 )
-@TypeConverters(DateConverter.class)
+@TypeConverters({DateConverter.class, IdConverter.class})
 public class TransactionEntity {
     public static final int TYPE_DEPOSIT = 1;
     public static final int TYPE_WITHDRAWAL = 2;
@@ -46,16 +47,16 @@ public class TransactionEntity {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
-    private String id = UUID.randomUUID().toString();
+    private Id id = new Id();
 
     @ColumnInfo(name = "goal_id")
-    private String goalId;
+    private Id goalId;
 
     @ColumnInfo(name = "transfer_goal_name")
     private String transferGoalName = null;
 
     @ColumnInfo(name = "auto_deposit_id")
-    private String autoDepositId;
+    private Id autoDepositId;
 
     @ColumnInfo(name = "amount")
     private Double amount;
@@ -82,7 +83,7 @@ public class TransactionEntity {
     }
 
     @Ignore
-    public TransactionEntity(String goalId, Double amount, String description, Integer transactionType) {
+    public TransactionEntity(Id goalId, Double amount, String description, Integer transactionType) {
         this.goalId = goalId;
         this.amount = amount;
         this.transactionType = transactionType;
@@ -93,7 +94,7 @@ public class TransactionEntity {
     }
 
     @Ignore
-    public TransactionEntity(String goalId, String transferGoalName, Double amount, String description) {
+    public TransactionEntity(Id goalId, String transferGoalName, Double amount, String description) {
         this.goalId = goalId;
         this.transferGoalName = transferGoalName;
         this.amount = amount;
@@ -105,7 +106,7 @@ public class TransactionEntity {
     }
 
     @Ignore
-    public TransactionEntity(String goalId, String autoDepositId, String autoDepositName, Double amount) {
+    public TransactionEntity(Id goalId, Id autoDepositId, String autoDepositName, Double amount) {
         this.goalId = goalId;
         this.autoDepositId = autoDepositId;
         this.amount = amount;
@@ -118,28 +119,28 @@ public class TransactionEntity {
     }
 
     @NonNull
-    public String getId() {
+    public Id getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(@NonNull Id id) {
         this.id = id;
     }
 
-    public String getGoalId() {
+    public Id getGoalId() {
         return goalId;
     }
 
-    public void setGoalId(String goalId) {
+    public void setGoalId(Id goalId) {
         this.goalId = goalId;
         this.updatedAt = new Date();
     }
 
-    public String getAutoDepositId() {
+    public Id getAutoDepositId() {
         return autoDepositId;
     }
 
-    public void setAutoDepositId(String autoDepositId) {
+    public void setAutoDepositId(Id autoDepositId) {
         this.autoDepositId = autoDepositId;
         this.updatedAt = new Date();
     }

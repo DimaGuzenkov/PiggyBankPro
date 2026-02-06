@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.piggybankpro.data.local.entities.GoalEntity;
+import com.example.piggybankpro.data.local.entities.Id;
 import com.example.piggybankpro.data.repository.GoalRepository;
 import com.example.piggybankpro.data.repository.RepositoryFactory;
 
@@ -29,7 +30,7 @@ public class GoalViewModel extends AndroidViewModel {
         return allGoals;
     }
 
-    public LiveData<GoalEntity> getGoalById(String goalId) {
+    public LiveData<GoalEntity> getGoalById(Id goalId) {
         return goalRepository.getGoalById(goalId);
     }
 
@@ -60,7 +61,7 @@ public class GoalViewModel extends AndroidViewModel {
         }
     }
 
-    public void depositToGoal(String goalId, double amount, String description) {
+    public void depositToGoal(Id goalId, double amount, String description) {
         try {
             if (amount <= 0) {
                 errorMessage.setValue("Сумма пополнения должна быть больше нуля");
@@ -73,7 +74,7 @@ public class GoalViewModel extends AndroidViewModel {
         }
     }
 
-    public void withdrawFromGoal(String goalId, double amount, String description) {
+    public void withdrawFromGoal(Id goalId, double amount, String description) {
         try {
             if (amount <= 0) {
                 errorMessage.setValue("Сумма списания должна быть больше нуля");
@@ -86,7 +87,7 @@ public class GoalViewModel extends AndroidViewModel {
         }
     }
 
-    public void transferBetweenGoals(String sourceGoalId, String destGoalId, double amount, String description) {
+    public void transferBetweenGoals(Id sourceGoalId, Id destGoalId, double amount, String description) {
         try {
             if (amount <= 0) {
                 errorMessage.setValue("Сумма перевода должна быть больше нуля");
