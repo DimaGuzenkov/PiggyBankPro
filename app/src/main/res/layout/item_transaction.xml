@@ -90,15 +90,6 @@
                         android:textSize="12sp"
                         android:textColor="#999999" />
                 </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/button_delete"
-                    android:layout_width="@dimen/icon_size_large"
-                    android:layout_height="match_parent"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Удалить"
-                    android:src="@android:drawable/ic_menu_delete"
-                    android:tint="#FF5252" />
             </LinearLayout>
 
         </LinearLayout>

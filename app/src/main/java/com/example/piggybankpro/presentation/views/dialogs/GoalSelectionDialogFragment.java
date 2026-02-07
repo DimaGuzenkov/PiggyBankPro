@@ -73,11 +73,9 @@ public class GoalSelectionDialogFragment extends DialogFragment {
         });
         recyclerView.setAdapter(adapter);
 
-        // Настраиваем поиск
         searchEditText.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
-                // Скрываем клавиатуру при потере фокуса
-                ((EditText) v).clearFocus();
+                v.clearFocus();
             }
         });
 

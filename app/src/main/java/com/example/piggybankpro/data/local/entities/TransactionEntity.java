@@ -87,7 +87,7 @@ public class TransactionEntity {
         this.goalId = goalId;
         this.amount = amount;
         this.transactionType = transactionType;
-        this.description = description != null && !description.isEmpty() ? description : getTransactionTypeString();
+        this.description = description;
         this.transactionDate = new Date();
         this.createdAt = new Date();
         this.updatedAt = new Date();
@@ -182,7 +182,7 @@ public class TransactionEntity {
     }
 
     public String getDescription() {
-        return description != null && description.isEmpty() ? description : getTransactionTypeString();
+        return description != null && !description.isEmpty() ? description : getTransactionTypeString();
     }
 
     public void setDescription(String description) {

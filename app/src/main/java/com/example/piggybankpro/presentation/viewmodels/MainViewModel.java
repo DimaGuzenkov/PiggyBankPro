@@ -48,7 +48,6 @@ public class MainViewModel extends AndroidViewModel {
             }
         });
 
-        // Производные LiveData
         currentParentTitle = Transformations.map(currentParentGoal, goal ->
                 goal != null ? goal.getTitle() : "Мои цели"
         );
@@ -59,14 +58,11 @@ public class MainViewModel extends AndroidViewModel {
 
         showBackButton = Transformations.map(currentParentId, Objects::nonNull);
 
-        // Динамически меняем источник totalSavedAmount в зависимости от currentParentId
         totalSavedAmount.addSource(currentParentId, parentId -> {
-            // Удаляем предыдущий источник, если он есть
             if (currentTotalSource != null) {
                 totalSavedAmount.removeSource(currentTotalSource);
             }
 
-            // Подписываемся на новый источник
             currentTotalSource = goalRepository.getTotalSavedAmount(parentId);
             totalSavedAmount.addSource(currentTotalSource, totalSavedAmount::setValue);
         });
@@ -84,7 +80,6 @@ public class MainViewModel extends AndroidViewModel {
         return currentParentId.getValue();
     }
 
-    // Навигация
     public void navigateToGoal(GoalEntity goal) {
         navigationStack.push(currentParentId.getValue());
         currentParentId.setValue(goal.getId());

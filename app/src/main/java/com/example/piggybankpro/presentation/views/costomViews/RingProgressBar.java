@@ -116,22 +116,18 @@ public class RingProgressBar extends View {
 
         float width = getWidth();
         float height = getHeight();
-//        float radius = Math.min(width, height) / 2 - strokeWidth;
         float radius = width / 2 - strokeWidth;
 
-        // Центрируем круг
         float centerX = width / 2;
         float centerY = 3 * height / 4;
 
-        // Устанавливаем область для рисования дуги
         rectF.set(centerX - radius, centerY - radius,
                 centerX + radius, centerY + radius);
 
-        // Проверяем, достигнут ли максимальный прогресс
         boolean isComplete = progress >= max;
 
         if (isComplete && showCheckOnComplete && checkDrawable != null) {
-            drawCheckMark(canvas, centerX, centerY, radius);
+            drawCheckMark(canvas, centerX, height / 2, radius);
         } else {
             drawProgressBar(canvas);
 
@@ -166,11 +162,6 @@ public class RingProgressBar extends View {
     private void drawProgressText(Canvas canvas, float centerX, float centerY) {
         @SuppressLint("DefaultLocale")
         String progressText = String.format("%.1f%%", progress);
-
-        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-        float textHeight = fontMetrics.descent - fontMetrics.ascent;
-        float textOffset = (textHeight / 2) - fontMetrics.descent;
-
         canvas.drawText(progressText, centerX, centerY, textPaint);
     }
 
@@ -180,9 +171,9 @@ public class RingProgressBar extends View {
         }
 
         // Размер галочки (60% от радиуса прогресс-бара)
-        int checkSize = (int) (radius * 1.2f);
-        int left = (int) (centerX - checkSize / 2);
-        int top = (int) (centerY - checkSize / 2);
+        int checkSize = (int) (radius * 2);
+        int left = (int) (centerX - (float) checkSize / 2);
+        int top = (int) (centerY - (float) checkSize / 2);
         int right = left + checkSize;
         int bottom = top + checkSize;
 

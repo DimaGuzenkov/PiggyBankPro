@@ -22,10 +22,6 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
     public TransactionViewHolder(@NonNull ItemTransactionBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
-
-        binding.buttonDelete.setOnClickListener(v -> {
-
-        });
     }
 
     public void bind(TransactionEntity transaction) {
@@ -36,6 +32,6 @@ public class TransactionViewHolder extends RecyclerView.ViewHolder {
         binding.textViewDate.setText(formatDate(transaction.getTransactionDate()));
 
         binding.textViewType.setText(transaction.getTransactionTypeString());
-        binding.textViewType.setBackgroundColor(transaction.getAmount() < 0 ? WithdrawColor : DepositColor);
+        binding.viewTypeIndicator.setBackgroundColor(transaction.getAmount() < 0 ? WithdrawColor : DepositColor);
     }
 }

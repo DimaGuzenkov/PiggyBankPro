@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.piggybankpro.R;
 import com.example.piggybankpro.data.local.entities.GoalEntity;
 import com.example.piggybankpro.databinding.ItemGoalBinding;
-import com.example.piggybankpro.presentation.utils.ViewUtils;
 
 public class GoalViewHolder extends RecyclerView.ViewHolder {
     ItemGoalBinding binding;
@@ -24,22 +23,19 @@ public class GoalViewHolder extends RecyclerView.ViewHolder {
     public void bind(GoalEntity goal) {
         binding.textViewTitle.setText(goal.getTitle());
 
-//        if (goal.getTargetAmount() != null) {
-//            binding.textViewTargetAmount.setText(formatAmount(goal.getTargetAmount()));
-//            binding.textViewTargetAmount.setVisibility(View.VISIBLE);
-//        } else {
-//            binding.textViewTargetAmount.setVisibility(View.GONE);
-//        }
-
         binding.textViewTotalAmount.setText(formatAmount(goal.getCalculatedAmount()));
         binding.textViewOwnAmount.setText(formatAmount(goal.getCurrentAmount()));
+        if (goal.getCalculatedAmount().equals(goal.getCurrentAmount())) {
+            binding.textViewOwnAmount.setVisibility(View.GONE);
+        } else {
+            binding.textViewOwnAmount.setVisibility(View.VISIBLE);
+        }
 
         Double progress = goal.getProgressPercentage();
         if (progress != null) {
-//            ViewUtils.updateGoalProgress(binding.progressBar, binding.textViewProgressPercentage, progress);
             binding.progressBar.setProgress(progress);
+            binding.progressBar.setVisibility(View.VISIBLE);
         } else {
-//            binding.textViewProgressPercentage.setVisibility(View.GONE);
             binding.progressBar.setVisibility(View.GONE);
         }
 
@@ -50,20 +46,6 @@ public class GoalViewHolder extends RecyclerView.ViewHolder {
         } else {
             binding.textViewDaysLeft.setVisibility(View.GONE);
         }
-
-//        if (goal.getColor() != null) {
-//            binding.imageViewIcon.setColorFilter(goal.getColor());
-//        }
-
-//        if (goal.getIsCompleted() != null && goal.getIsCompleted()) {
-//            binding.imageViewCompleted.setVisibility(View.VISIBLE);
-//            binding.cardViewGoal.setAlpha(0.8f);
-//        } else {
-//            binding.imageViewCompleted.setVisibility(View.GONE);
-//            binding.cardViewGoal.setAlpha(1.0f);
-//        }
-
-//        binding.imageViewIcon.setImageResource(R.drawable.ic_goal);
     }
 
     public void setHighlighted(boolean highlighted) {
